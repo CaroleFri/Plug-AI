@@ -9,7 +9,7 @@ def train_loop(train_loader, model, optimizer, criterion, nb_epoch, device):
             model.train()
             optimizer.zero_grad()
 
-            inp = x["image"].to(device)
+            inp = x["input"].to(device)
             targets = x["label"].to(device)
 
             out = model(inp)
