@@ -22,5 +22,5 @@ module load pytorch-gpu/py3/1.10.1
 set -x
 
 # code execution
-srun python main.py --dataset_dir /gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/ \
---limit_sample 20 --batch_size 2 --lr 0.0001
+srun python main.py --batch_size 2 --lr 0.0001 --n_class 5 \
+--dataset_dir /gpfsscratch/idris/sos/ssos022/Medical/BraTS2021/BraTS2021_Training_Data \
