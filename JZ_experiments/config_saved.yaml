@@ -1,0 +1,32 @@
+# Default config is used if no config file is specified in CLI. Undefined arguments will take the default values.
+# default_config_file: /gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml
+
+
+mode: Training # Choose between Training, Evaluation, Inference
+
+dataset_dir: /gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/ # Absolute path to the dataset root dir
+task: THIS IS A TEST #defines the type of dataset and task to accomplish. We will have to define the structure of the dataset according to each task and do some auto-selection of models accordingly
+n_class: 4
+categories:
+- cat0
+- cat1
+- cat2
+- cat3
+limit_sample: 20
+
+#Training settings
+batch_size: 2
+nb_epoch: 1
+learning_rate: '5e-05' #lr, learning rate, either a value or a string in "list of strategies"
+
+# Execution settings
+device: cuda
+random_seed: 2022  # None for real randomness, set an integer for reproductibility
+
+# Reporting settings
+verbose: Full #Full, Restricted, None
+export_config: true
+
+
+config_file: /gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml
+lr: 0.0001
