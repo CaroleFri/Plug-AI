@@ -14,7 +14,6 @@ def parse_args():
     parser.add_argument("--limit_sample", type=int)
     parser.add_argument("--batch_size", type=int, default=2)
     parser.add_argument("--nb_epoch", type=int, default=1)
-    parser.add_argument("--n_class", type=int, default=4)
     parser.add_argument("--lr", type=float, default=5e-05)
     parser.add_argument("--device", type=str, default=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 
@@ -30,7 +29,7 @@ def main(args):
     kernels = [[3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3]]
     strides = [[1, 1, 1], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2]]
     in_channels = 4
-    n_class = args.n_class
+    n_class = 4
     model = get_model(in_channels, n_class, kernels, strides).to(args.device)
     print("Model loaded ! Initialize training...")
 
