@@ -4,7 +4,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 def train_loop(train_loader, model, optimizer, criterion, args):
     if args["report_log"]:
-        writer = SummaryWriter(f'./report_log/args["model_name"]')
+        writer = SummaryWriter(f'./report_log/{args["model_name"]}')
     total_train_step = len(train_loader)
     print(f"start training loop, {total_train_step} steps per epoch")
     for epoch in range(args["nb_epoch"]):
