@@ -7,7 +7,8 @@ from .script_utils import *
 For now we let default be defined here.
 Later we will move default parameters localy corresponding to each class and import them at loading time
 '''
-default_args = {'mode': 'Training', 
+default_args = {'mode': 'Training',
+                'model_name': 'model_test',
                 'dataset_dir': '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/', 
                 'task': 'Segmentation', 
                 'n_class': 4, 
@@ -19,7 +20,8 @@ default_args = {'mode': 'Training',
                 'device': 'cuda', 
                 'random_seed': 2022, 
                 'verbose': 'Full', 
-                'export_config': True}
+                'export_config': True,
+                'report_log': False}
 
 def parse_args():
     """
@@ -31,6 +33,7 @@ def parse_args():
     # Global config
     parser.add_argument("--mode", type=str) # Training, Evaluation, Inference,
     parser.add_argument("--export_config", type=str, help="test")
+    parser.add_argument("--model_name", type=str)
     # Data information
     parser.add_argument("--dataset_dir", type=str)
     parser.add_argument("--task", type=str, default="THIS IS A TEST")
@@ -42,6 +45,8 @@ def parse_args():
     parser.add_argument("--nb_epoch", type=int)
     parser.add_argument("--lr", type=float)
     parser.add_argument("--device", type=arg2device)
+    parser.add_argument("--report_log", action='store_true') # do not put type
+
     cli_args = parser.parse_args()
     cli_args = vars(cli_args)
     

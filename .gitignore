@@ -1,3 +1,7 @@
 **.ipynb_checkpoints
 **.idea
 **__pycache__
+model/*
+report_log/*
+**stderr.txt
+**stdout.txt

@@ -21,7 +21,7 @@ def get_datalist(source):
     return datalist
 
 
-def get_dataset(source, batch_size=2, limit_sample=None): # Only work for the Task01_BrainTumour dataset for now
+def get_dataset(source, batch_size=2, limit_sample=None):
     print("loading dataset...")
     datalist = get_datalist(source)
     keys = list(datalist[0].keys())
@@ -32,6 +32,37 @@ def get_dataset(source, batch_size=2, limit_sample=None): # Only work for the Ta
         EnsureChannelFirstd(keys=keys),
         ConcatItemsd(keys[:-1], "input"),
         SpatialCropd(keys=['input', 'label'], # crop it to make easily usable for etape 1
+                     roi_size=[128, 128, 128],
+                     roi_center=[0, 0, 0]
+                     )
+    ])
+
+    train_ds = Dataset( # A more optimized dataset can be used
+        data=datalist,
+        transform=transform
+    )
+
+    data_loader = DataLoader(
+        train_ds,
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
+    )
+
+    return data_loader
+
+
+def get_infer_dataset(source, batch_size=2, limit_sample=None):
+    print("loading dataset...")
+    datalist = get_datalist(source)
+    keys = list(datalist[0].keys())
+    if limit_sample: datalist = datalist[:limit_sample]
+
+    transform = Compose([
+        LoadImaged(keys=keys[:-1]),  # To change when we have a real eval dataset
+        EnsureChannelFirstd(keys=keys[:-1]),  # To change when we have a real eval dataset
+        ConcatItemsd(keys[:-1], "input"),  # To change when we have a real eval dataset
+        SpatialCropd(keys=['input'],  # crop it to make easily usable for etape 1
                      roi_size=[128, 128, 128],
                      roi_center=[0, 0, 0]
                      )
