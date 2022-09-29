@@ -2,8 +2,6 @@
 **.idea
 <<<<<<< HEAD
 **__pycache__
-checkpoints/*
-report_log/*
 **stderr.txt
 **stdout.txt
 launcher_test.ipynb
