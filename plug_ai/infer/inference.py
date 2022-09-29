@@ -18,3 +18,4 @@ def infer_loop(infer_loader, model, args):
         print(f'Inference_step {i+1}/{total_infer_step}')
 
     return result
+

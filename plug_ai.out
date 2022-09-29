@@ -11,13 +11,13 @@ got datalist, extract:
 dataset loaded ! Loading checkpoints...
 Model loaded ! Initialize training...
 start training loop, 10 steps per epoch
-[Epoch 1/1 |  Step_Epoch 1/10 | Loss 2.848562479019165]
-[Epoch 1/1 |  Step_Epoch 2/10 | Loss 2.8429574966430664]
-[Epoch 1/1 |  Step_Epoch 3/10 | Loss 2.862534523010254]
-[Epoch 1/1 |  Step_Epoch 4/10 | Loss 2.8650271892547607]
-[Epoch 1/1 |  Step_Epoch 5/10 | Loss 2.854271173477173]
-[Epoch 1/1 |  Step_Epoch 6/10 | Loss 2.858119487762451]
-[Epoch 1/1 |  Step_Epoch 7/10 | Loss 2.8458659648895264]
-[Epoch 1/1 |  Step_Epoch 8/10 | Loss 2.8231348991394043]
-[Epoch 1/1 |  Step_Epoch 9/10 | Loss 2.813941478729248]
-[Epoch 1/1 |  Step_Epoch 10/10 | Loss 2.828524351119995]
+[Epoch 1/1 |  Step_Epoch 1/10 | Loss 2.7674400806427]
+[Epoch 1/1 |  Step_Epoch 2/10 | Loss 2.7461414337158203]
+[Epoch 1/1 |  Step_Epoch 3/10 | Loss 2.7105064392089844]
+[Epoch 1/1 |  Step_Epoch 4/10 | Loss 2.7068536281585693]
+[Epoch 1/1 |  Step_Epoch 5/10 | Loss 2.728743314743042]
+[Epoch 1/1 |  Step_Epoch 6/10 | Loss 2.7272226810455322]
+[Epoch 1/1 |  Step_Epoch 7/10 | Loss 2.6914150714874268]
+[Epoch 1/1 |  Step_Epoch 8/10 | Loss 2.7207350730895996]
+[Epoch 1/1 |  Step_Epoch 9/10 | Loss 2.6888022422790527]
+[Epoch 1/1 |  Step_Epoch 10/10 | Loss 2.6698434352874756]

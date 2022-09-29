@@ -27,6 +27,7 @@ default_args = {'mode': 'Training',
                 'dynunet_strides': [[1, 1, 1], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2]],
                 'in_channels': 4}
 
+
 def parse_args():
     """
     A parser that combines default arguments with cli arguments and config file arguments
@@ -54,7 +55,6 @@ def parse_args():
     parser.add_argument("--dynunet_kernels", type=list)
     parser.add_argument("--dynunet_strides", type=list)
     parser.add_argument("--in_channels", type=int)
-
 
     cli_args = parser.parse_args()
     cli_args = vars(cli_args)
@@ -97,7 +97,11 @@ def parse_args():
 '''
     parser.add_argument("--mode", type=str, default="Training") # Training, Evaluation, Inference,
     # Global config
+<<<<<<< HEAD
     parser.add_argument("--config_file", type=str, default="/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config_BrainTumour.yaml")
+=======
+    parser.add_argument("--config_file", type=str, default="/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml")
+>>>>>>> 42851b017d6539f35b9d56bfeda121d1ce05e228
     parser.add_argument("--export_config", type=str, default="/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config_export.yaml")
     # Data information
     parser.add_argument("--dataset_dir", type=str, default="/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/")

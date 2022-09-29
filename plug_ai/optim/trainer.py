@@ -9,6 +9,7 @@ def train_loop(train_loader, model, optimizer, criterion, args):
     total_train_step = len(train_loader)
     print(f"start training loop, {total_train_step} steps per epoch")
     for epoch in range(args["nb_epoch"]):
+
         for i, x in enumerate(train_loader):
             model.train()
             optimizer.zero_grad()
@@ -17,6 +18,7 @@ def train_loop(train_loader, model, optimizer, criterion, args):
             targets = x["label"].to(args["device"])
 
             out = model(inp)
+
             loss = criterion(out[0], targets)
 
             loss.backward()

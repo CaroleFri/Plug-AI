@@ -64,3 +64,4 @@ if __name__ == '__main__':
         infer(args)
     else:
         print('Mode incorrect')
+
