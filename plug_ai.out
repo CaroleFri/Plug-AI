@@ -1,0 +1,23 @@
+Loading pytorch-gpu/py3/1.10.1
+  Loading requirement: cuda/11.2 nccl/2.9.6-1-cuda cudnn/8.1.1.33-cuda gcc/8.4.1
+    openmpi/4.1.1-cuda intel-mkl/2020.4 magma/2.5.4-cuda sox/14.4.2
++ srun python plug_ai/main.py --config_file ./config_exemples/config_Brats.yaml
+Initialize training...
+Final Args: {'mode': 'Training', 'model_name': 'model_test', 'dataset_dir': '/gpfsscratch/idris/sos/ssos022/Medical/BraTS2021/BraTS2021_Training_Data/', 'task': 'THIS IS A TEST', 'n_class': 5, 'categories': ['cat0', 'cat1', 'cat2', 'cat3', 'cat4'], 'limit_sample': 20, 'batch_size': 2, 'nb_epoch': 1, 'learning_rate': '5e-05', 'device': 'cuda', 'random_seed': 2022, 'verbose': 'Full', 'export_config': False, 'report_log': False, 'checkpoints_path': './checkpoints', 'dynunet_kernels': [[3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3]], 'dynunet_strides': [[1, 1, 1], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2]], 'in_channels': 4, 'config_file': './config_exemples/config_Brats.yaml'}
+arguments loaded
+loading dataset...
+got datalist, extract: 
+ {'channel_0': '/gpfsscratch/idris/sos/ssos022/Medical/BraTS2021/BraTS2021_Training_Data/BraTS2021_00081/BraTS2021_00081_flair.nii.gz', 'channel_1': '/gpfsscratch/idris/sos/ssos022/Medical/BraTS2021/BraTS2021_Training_Data/BraTS2021_00081/BraTS2021_00081_t1ce.nii.gz', 'channel_2': '/gpfsscratch/idris/sos/ssos022/Medical/BraTS2021/BraTS2021_Training_Data/BraTS2021_00081/BraTS2021_00081_t2.nii.gz', 'channel_3': '/gpfsscratch/idris/sos/ssos022/Medical/BraTS2021/BraTS2021_Training_Data/BraTS2021_00081/BraTS2021_00081_t1.nii.gz', 'label': '/gpfsscratch/idris/sos/ssos022/Medical/BraTS2021/BraTS2021_Training_Data/BraTS2021_00081/BraTS2021_00081_seg.nii.gz'}
+dataset loaded ! Loading checkpoints...
+Model loaded ! Initialize training...
+start training loop, 10 steps per epoch
+[Epoch 1/1 |  Step_Epoch 1/10 | Loss 2.848562479019165]
+[Epoch 1/1 |  Step_Epoch 2/10 | Loss 2.8429574966430664]
+[Epoch 1/1 |  Step_Epoch 3/10 | Loss 2.862534523010254]
+[Epoch 1/1 |  Step_Epoch 4/10 | Loss 2.8650271892547607]
+[Epoch 1/1 |  Step_Epoch 5/10 | Loss 2.854271173477173]
+[Epoch 1/1 |  Step_Epoch 6/10 | Loss 2.858119487762451]
+[Epoch 1/1 |  Step_Epoch 7/10 | Loss 2.8458659648895264]
+[Epoch 1/1 |  Step_Epoch 8/10 | Loss 2.8231348991394043]
+[Epoch 1/1 |  Step_Epoch 9/10 | Loss 2.813941478729248]
+[Epoch 1/1 |  Step_Epoch 10/10 | Loss 2.828524351119995]

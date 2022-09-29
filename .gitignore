@@ -1,7 +1,8 @@
 **.ipynb_checkpoints
 **.idea
 **__pycache__
-JZ_experiments/model/*
-JZ_experiments/report_log/*
+checkpoints/*
+report_log/*
 **stderr.txt
 **stdout.txt
+launcher_test.ipynb

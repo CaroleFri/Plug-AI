@@ -21,7 +21,11 @@ default_args = {'mode': 'Training',
                 'random_seed': 2022, 
                 'verbose': 'Full', 
                 'export_config': True,
-                'report_log': False}
+                'report_log': False,
+                'checkpoints_path': './checkpoints',
+                'dynunet_kernels': [[3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3]],
+                'dynunet_strides': [[1, 1, 1], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2]],
+                'in_channels': 4}
 
 def parse_args():
     """
@@ -29,10 +33,10 @@ def parse_args():
     """
     
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config_file", type=str, default="/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml")
+    parser.add_argument("--config_file", type=str, default="./test_config.yaml")
     # Global config
     parser.add_argument("--mode", type=str) # Training, Evaluation, Inference,
-    parser.add_argument("--export_config", type=str, help="test")
+    parser.add_argument("--export_config", type=str, help="test") # why str ?
     parser.add_argument("--model_name", type=str)
     # Data information
     parser.add_argument("--dataset_dir", type=str)
@@ -45,7 +49,12 @@ def parse_args():
     parser.add_argument("--nb_epoch", type=int)
     parser.add_argument("--lr", type=float)
     parser.add_argument("--device", type=arg2device)
-    parser.add_argument("--report_log", action='store_true') # do not put type
+    parser.add_argument("--report_log", type=str) # why str ?
+    parser.add_argument("--checkpoints_path", type=str)
+    parser.add_argument("--dynunet_kernels", type=list)
+    parser.add_argument("--dynunet_strides", type=list)
+    parser.add_argument("--in_channels", type=int)
+
 
     cli_args = parser.parse_args()
     cli_args = vars(cli_args)
@@ -88,7 +97,7 @@ def parse_args():
 '''
     parser.add_argument("--mode", type=str, default="Training") # Training, Evaluation, Inference,
     # Global config
-    parser.add_argument("--config_file", type=str, default="/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml")
+    parser.add_argument("--config_file", type=str, default="/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config_BrainTumour.yaml")
     parser.add_argument("--export_config", type=str, default="/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config_export.yaml")
     # Data information
     parser.add_argument("--dataset_dir", type=str, default="/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/")
