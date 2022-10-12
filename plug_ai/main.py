@@ -35,7 +35,9 @@ def train(args):
     optimizer = SGD(model.parameters(), lr=0.0001, momentum=0.99, weight_decay=3e-5, nesterov=True)
 
     model = train_loop(train_loader, model, optimizer, criterion, args)
+    print("Training complete, saving model...")
     torch.save(model.state_dict(), os.path.join(args['checkpoints_path'], f'{args["model_name"]}.pt'))
+    print("model saved !")
 
 
 def infer(args):

@@ -4,7 +4,7 @@
 
 mode: Training # Choose between Training, Evaluation, Inference
 
-dataset_dir: /gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/ # Absolute path to the dataset root dir
+dataset_dir: /gpfswork/rech/ibu/commun/Task01_BrainTumour # Absolute path to the dataset root dir
 task: THIS IS A TEST #defines the type of dataset and task to accomplish. We will have to define the structure of the dataset according to each task and do some auto-selection of models accordingly
 n_class: 4
 categories:
