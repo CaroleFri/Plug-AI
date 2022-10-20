@@ -34,11 +34,14 @@ if __name__ == '__main__':
                                        limit_sample=config["limit_sample"])
     print("Dataset loaded")
 
-    model_manager = ModelManager(config)
+    model_manager = ModelManager(model_type=config['model_type'], model_kwargs=config['model_kwargs'],
+                                 res_out=config['res_out'])
     model = model_manager.get_model()
     print("Model loaded")
 
-    exec_manager = ExecManager(config=config, model=model, dataloader=dataloader)
+    exec_manager = ExecManager(model=model, dataloader=dataloader, mode=config['mode'], device=config['device'],
+                               nb_epoch=config['nb_epoch'], report_log=config['report_log'],
+                               model_name=config['model_name'])
     print("Execution initialised")
 
     if config["mode"] == "Training":

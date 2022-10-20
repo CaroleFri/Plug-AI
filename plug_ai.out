@@ -1,9 +1,9 @@
 Loading pytorch-gpu/py3/1.10.1
   Loading requirement: cuda/11.2 nccl/2.9.6-1-cuda cudnn/8.1.1.33-cuda gcc/8.4.1
     openmpi/4.1.1-cuda intel-mkl/2020.4 magma/2.5.4-cuda sox/14.4.2
-+ srun python plug_ai/main.py --config_file ./config_exemples/config_Brats.yaml --mode Inference
++ srun python plug_ai/main.py --config_file ./config_exemples/config_Brats.yaml
 Initialize training...
-Final config: {'mode': 'Inference', 'model_name': 'model_test', 'dataset_dir': '/gpfswork/rech/ibu/commun/BraTS2021/BraTS2021_Training_Data/', 'task': 'THIS IS A TEST', 'categories': ['cat0', 'cat1', 'cat2', 'cat3', 'cat4'], 'limit_sample': 20, 'batch_size': 2, 'nb_epoch': 1, 'learning_rate': '5e-05', 'device': 'cuda', 'random_seed': 2022, 'verbose': 'Full', 'export_config': False, 'report_log': False, 'checkpoints_path': './checkpoints', 'model_type': 'DynUnet', 'model_args': None, 'model_kwargs': None, 'res_out': False, 'config_file': './config_exemples/config_Brats.yaml'}
+Final config: {'mode': 'Training', 'model_name': 'model_test', 'dataset_dir': '/gpfswork/rech/ibu/commun/BraTS2021/BraTS2021_Training_Data/', 'task': 'THIS IS A TEST', 'categories': ['cat0', 'cat1', 'cat2', 'cat3', 'cat4'], 'limit_sample': 20, 'batch_size': 2, 'nb_epoch': 1, 'learning_rate': '5e-05', 'device': 'cuda', 'random_seed': 2022, 'verbose': 'Full', 'export_config': False, 'report_log': False, 'checkpoints_path': './checkpoints', 'model_type': 'DynUnet', 'model_args': None, 'model_kwargs': None, 'res_out': False, 'config_file': './config_exemples/config_Brats.yaml'}
 Arguments initialized
 loading dataset...
 got datalist, extract: 
@@ -12,19 +12,20 @@ Dataset loaded
 checking model exists
 loading DynUnet model
 Model loaded
-INFERENCE MODE
+TRAINING MODE
 Execution initialised
-Inference Mode
-start inference loop, 10 steps
-WARNING, the inference will probably cause an OOM
-Inference_step 1/10
-Inference_step 2/10
-Inference_step 3/10
-Inference_step 4/10
-Inference_step 5/10
-Inference_step 6/10
-Inference_step 7/10
-Inference_step 8/10
-Inference_step 9/10
-Inference_step 10/10
->>> Complete execution in: 0:00:13.540567
+start training loop, 10 steps per epoch with 1 epoch
+[Epoch 1/1 |  Step_Epoch 1/10 | Loss 2.4117655754089355]
+[Epoch 1/1 |  Step_Epoch 2/10 | Loss 2.440683126449585]
+[Epoch 1/1 |  Step_Epoch 3/10 | Loss 2.4298133850097656]
+[Epoch 1/1 |  Step_Epoch 4/10 | Loss 2.4271395206451416]
+[Epoch 1/1 |  Step_Epoch 5/10 | Loss 2.4132375717163086]
+[Epoch 1/1 |  Step_Epoch 6/10 | Loss 2.4352455139160156]
+[Epoch 1/1 |  Step_Epoch 7/10 | Loss 2.409759998321533]
+[Epoch 1/1 |  Step_Epoch 8/10 | Loss 2.4070851802825928]
+[Epoch 1/1 |  Step_Epoch 9/10 | Loss 2.418842077255249]
+[Epoch 1/1 |  Step_Epoch 10/10 | Loss 2.4016568660736084]
+Epoch 0 finished
+Training complete, saving model...
+model saved !
+>>> Complete execution in: 0:00:23.307874

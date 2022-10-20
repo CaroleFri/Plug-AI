@@ -16,21 +16,35 @@ dyn_kwargs = {
 
 
 class PlugDynUNet(nn.Module):
-    def __init__(self, config):
+    """
+    Plug-AI version of DynUnet
+    """
+    def __init__(self, model_kwargs=None, res_out=False):
+        """
+
+        :param model_kwargs:
+        :param res_out:
+        """
         super(PlugDynUNet, self).__init__()
-        self.config = config
-        if type(self.config["model_kwargs"]) is dict:
-            dyn_kwargs.update(self.config["model_kwargs"])
+        self.res_out = res_out
+
+        if type(model_kwargs) is dict:
+            dyn_kwargs.update(self.model_kwargs)
 
         self.base = DynUNet(
             **dyn_kwargs
         )
 
     def forward(self, inp):
+        """
+
+        :param inp:
+        :return:
+        """
         out = self.base(inp)
 
-        # for now res_out always false
-        if not self.config["res_out"]:
+        # for now res_out is always false
+        if not self.res_out:
             out = torch.unbind(out, dim=1)
             out = out[0]
 

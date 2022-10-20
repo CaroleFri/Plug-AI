@@ -9,11 +9,27 @@ class ExecManager():
     Class to configure and run the training and the inference
     """
 
-    def __init__(self, config, model, dataloader=None, optimizer=None, criterion=None):
-        self.config = config
-        self.model = model.to(self.config["device"])
+    def __init__(self,  model, dataloader=None, optimizer=None, criterion=None, mode='Training', device="cpu",
+                 nb_epoch=1, report_log=False, model_name="tes_model"):
+        """
 
-        if self.config['mode'] == 'Training':
+        :param model:
+        :param dataloader:
+        :param optimizer:
+        :param criterion:
+        :param mode:
+        :param device:
+        :param nb_epoch:
+        :param report_log:
+        :param model_name:
+        """
+        self.device = device
+        self.nb_epoch = nb_epoch
+        self.report_log = report_log
+        self.model_name = model_name
+        self.model = model.to(self.device)
+
+        if mode == 'Training':
             print("TRAINING MODE")
             self.training_loader = dataloader
             self.inference_loader = None
@@ -32,8 +48,8 @@ class ExecManager():
             print("INFERENCE MODE")
             self.inference_loader = dataloader
 
-        if self.config["report_log"]:
-            self.writer = SummaryWriter(f'./report_log/{self.config["model_name"]}')
+        if self.report_log:
+            self.writer = SummaryWriter(f'./report_log/{self.model_name}')
             print("recording tensorboard logs")
 
     def inference_step(self, sample_inp):
@@ -43,14 +59,19 @@ class ExecManager():
         :return: torch.Tensor
         """
 
-        sample_inp = sample_inp.to(self.config["device"])
+        sample_inp = sample_inp.to(self.device)
         return self.model(sample_inp)
 
     def training_step(self, sample):
+        """
+
+        :param sample:
+        :return:
+        """
         self.optimizer.zero_grad()
 
         output = self.inference_step(sample["input"])
-        loss = self.criterion(output, sample["label"].to(self.config["device"]))
+        loss = self.criterion(output, sample["label"].to(self.device))
 
         loss.backward()
         self.optimizer.step()
@@ -59,6 +80,10 @@ class ExecManager():
 
     @torch.no_grad()
     def inference(self):
+        """
+
+        :return:
+        """
         self.model.eval()
         total_infer_step = len(self.inference_loader)
         print(f"start inference loop, {total_infer_step} steps")
@@ -74,16 +99,20 @@ class ExecManager():
         return result
 
     def training(self):
-        total_train_step = len(self.training_loader)
-        print(f"start training loop, {total_train_step} steps per epoch with {self.config['nb_epoch']} epoch")
+        """
 
-        for epoch in range(self.config["nb_epoch"]):
+        :return:
+        """
+        total_train_step = len(self.training_loader)
+        print(f"start training loop, {total_train_step} steps per epoch with {self.nb_epoch} epoch")
+
+        for epoch in range(self.nb_epoch):
             self.model.train()
             for i, sample in enumerate(self.training_loader):
                 loss = self.training_step(sample)
-                print(f'[Epoch {epoch + 1}/{self.config["nb_epoch"]} |  Step_Epoch {i + 1}/{total_train_step} | Loss {loss.item()}]')
+                print(f'[Epoch {epoch + 1}/{self.nb_epoch} |  Step_Epoch {i + 1}/{total_train_step} | Loss {loss.item()}]')
 
-                if self.config["report_log"]:
+                if self.report_log:
                     self.writer.add_scalar('Loss/train', loss.item(), i + epoch * total_train_step)
 
             # Evaluation here (not implemented yet)
@@ -93,32 +122,3 @@ class ExecManager():
             print(f"Epoch {epoch} finished")
 
         return self.model
-
-
-def train_loop(train_loader, model, optimizer, criterion, args):
-    if args["report_log"]:
-        writer = SummaryWriter(f'./report_log/{args["model_name"]}')
-        print("recording tensorboard logs")
-    total_train_step = len(train_loader)
-    print(f"start training loop, {total_train_step} steps per epoch")
-    for epoch in range(args["nb_epoch"]):
-
-        for i, x in enumerate(train_loader):
-            model.train()
-            optimizer.zero_grad()
-
-            inp = x["input"].to(args["device"])
-            targets = x["label"].to(args["device"])
-
-            out = model(inp)
-
-            loss = criterion(out, targets)
-
-            loss.backward()
-            optimizer.step()
-
-            if args["report_log"]:
-                writer.add_scalar('Loss/train', loss.item(), i+epoch*total_train_step)
-            print(f'[Epoch {epoch+1}/{args["nb_epoch"]} |  Step_Epoch {i+1}/{total_train_step} | Loss {loss.item()}]')
-
-    return model
