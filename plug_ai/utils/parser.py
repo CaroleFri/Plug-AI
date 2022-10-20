@@ -1,5 +1,5 @@
 import argparse
-#import yaml
+import yaml as yl
 import ruamel.yaml
 from .script_utils import *
 
@@ -7,28 +7,30 @@ from .script_utils import *
 For now we let default be defined here.
 Later we will move default parameters localy corresponding to each class and import them at loading time
 '''
-default_args = {'mode': 'Training',
-                'model_name': 'model_test',
-                'dataset_dir': '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/', 
-                'task': 'Segmentation', 
-                'n_class': 4, 
-                'categories': ['cat0', 'cat1', 'cat2', 'cat3'], 
-                'limit_sample': 'None', 
-                'batch_size': 2, 
-                'nb_epoch': 1, 
-                'learning_rate': '5e-05', 
-                'device': 'cuda', 
-                'random_seed': 2022, 
-                'verbose': 'Full', 
-                'export_config': True,
-                'report_log': False,
-                'checkpoints_path': './checkpoints',
-                'dynunet_kernels': [[3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3]],
-                'dynunet_strides': [[1, 1, 1], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2]],
-                'in_channels': 4}
+default_config = {
+    'mode': 'Training',
+    'model_name': 'model_test',
+    'dataset_dir': '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/',
+    'task': 'Segmentation',
+    'categories': ['cat0', 'cat1', 'cat2', 'cat3'],
+    'limit_sample': 'None',
+    'batch_size': 2,
+    'nb_epoch': 1,
+    'learning_rate': '5e-05',
+    'device': 'cuda',
+    'random_seed': 2022,
+    'verbose': 'Full',
+    'export_config': False,
+    'report_log': False,
+    'checkpoints_path': './checkpoints',
+    'model_type': 'DynUnet',
+    'model_args': None,
+    'model_kwargs': None,
+    'res_out': False # Use the residual output of Unet (not working for now)
+}
 
 
-def parse_args():
+def parse_config():
     """
     A parser that combines default arguments with cli arguments and config file arguments
     """
@@ -37,12 +39,11 @@ def parse_args():
     parser.add_argument("--config_file", type=str, default="./test_config.yaml")
     # Global config
     parser.add_argument("--mode", type=str) # Training, Evaluation, Inference,
-    parser.add_argument("--export_config", type=str, help="test") # why str ?
+    parser.add_argument("--export_config", type=arg2bool, help="test") # why str ?
     parser.add_argument("--model_name", type=str)
     # Data information
     parser.add_argument("--dataset_dir", type=str)
     parser.add_argument("--task", type=str, default="THIS IS A TEST")
-    parser.add_argument("--n_class", type=int)
     parser.add_argument("--categories", type=list)
     parser.add_argument("--limit_sample", type=int)
     # Training information
@@ -50,47 +51,51 @@ def parse_args():
     parser.add_argument("--nb_epoch", type=int)
     parser.add_argument("--lr", type=float)
     parser.add_argument("--device", type=arg2device)
-    parser.add_argument("--report_log", type=str) # why str ?
+    parser.add_argument("--report_log", type=arg2bool) # why str ?
     parser.add_argument("--checkpoints_path", type=str)
-    parser.add_argument("--dynunet_kernels", type=list)
-    parser.add_argument("--dynunet_strides", type=list)
-    parser.add_argument("--in_channels", type=int)
+    parser.add_argument("--model_type", type=str)
+    parser.add_argument("--model_args", type=list)
+    parser.add_argument("--model_kwargs", type=list)
 
-    cli_args = parser.parse_args()
-    cli_args = vars(cli_args)
+    cli_config = parser.parse_args()
+    cli_config = vars(cli_config)
     
     #args = {key: value[:] for key, value in default_args.items()}
-    args = dict(default_args)
+    config = dict(default_config)
 
-    if cli_args["config_file"] is not None :
+    if cli_config["config_file"] is not None :
         yaml = ruamel.yaml.YAML(typ='safe')
         yaml.preserve_quotes = True
-        with open(cli_args["config_file"]) as cf:
-            config_file_args  = yaml.load(cf)
-        config_file_args = read_yaml(cli_args["config_file"])
-        args.update(config_file_args)
+        with open(cli_config["config_file"]) as cf:
+            config_file  = yaml.load(cf)
+        config_file = read_yaml(cli_config["config_file"])
+        config.update(config_file)
     #args.update(cli_args)
-    args.update({k: v for k, v in cli_args.items() if v is not None})  # Update with cli_args if arg is not None, alternative use argparse.SUPPRESS
+    config.update({k: v for k, v in cli_config.items() if v is not None})  # Update with cli_config if arg is not None, alternative use argparse.SUPPRESS
     
-    print("Final Args:", args)
+    print("Final config:", config)
     
     
     '''
     Auto-modification of a predefined config file seems to work well with ruyaml even supporting extra arguments that were not initialy present in the file (added at the end)
     '''
-    if args["export_config"]:
+    if config["export_config"]:
         ruyaml = ruamel.yaml.YAML()#typ='safe'
         ruyaml.preserve_quotes = True
-        with open(cli_args["config_file"]) as cf:
-            config_file_args  = ruyaml.load(cf)
-        print(config_file_args)
-        config_file_args.update(args)
+        with open(cli_config["config_file"]) as cf:
+            config_file = ruyaml.load(cf)
+        print(config_file)
+        # Problème ici, j'ai fait un changement mais c'est bizarre ................................
+        print(config)
+        config_file.update(config)
+        print(config)
+        # .........................................................................................
         with open('config_saved.yaml', 'w') as file:
-             ruyaml.dump(config_file_args, file)
+             ruyaml.dump(config_file, file)
         #with open('config_used.yaml', 'w') as file:
             #config_used = yaml.dump(args, stream=file,default_flow_style=False, sort_keys=False)        
     
-    return args
+    return config
 
 
 

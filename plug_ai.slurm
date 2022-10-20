@@ -22,4 +22,4 @@ module load pytorch-gpu/py3/1.10.1
 set -x
 
 # code execution
-srun python plug_ai/main.py --config_file "./config_exemples/config_BrainTumour.yaml"
+srun python plug_ai/main.py --config_file "./config_exemples/config_Brats.yaml" --mode Inference

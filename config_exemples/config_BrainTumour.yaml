@@ -6,7 +6,6 @@ mode: Training # Choose between Training, Evaluation, Inference
 
 dataset_dir: /gpfswork/rech/ibu/commun/Task01_BrainTumour # Absolute path to the dataset root dir
 task: THIS IS A TEST #defines the type of dataset and task to accomplish. We will have to define the structure of the dataset according to each task and do some auto-selection of models accordingly
-n_class: 4
 categories:
 - cat0
 - cat1
@@ -31,43 +30,6 @@ export_config: false
 model_name: model_test
 report_log: True
 checkpoints_path: ./checkpoints
-dynunet_kernels:
-- - 3
-  - 3
-  - 3
-- - 3
-  - 3
-  - 3
-- - 3
-  - 3
-  - 3
-- - 3
-  - 3
-  - 3
-- - 3
-  - 3
-  - 3
-- - 3
-  - 3
-  - 3
-dynunet_strides:
-- - 1
-  - 1
-  - 1
-- - 2
-  - 2
-  - 2
-- - 2
-  - 2
-  - 2
-- - 2
-  - 2
-  - 2
-- - 2
-  - 2
-  - 2
-- - 2
-  - 2
-  - 2
-in_channels: 4
 config_file: ./config_BrainTumour.yaml
+model_kwargs:
+  out_channels: 4
