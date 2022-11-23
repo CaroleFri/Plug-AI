@@ -20,7 +20,7 @@ nb_epoch: 1
 learning_rate:  5e-05 #lr, learning rate, either a value or a string in "list of strategies"
 
 # Execution settings
-device: cuda
+device: cpu
 random_seed: 2022  # None for real randomness, set an integer for reproductibility
 
 # Reporting settings

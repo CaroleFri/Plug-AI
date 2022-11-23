@@ -1,99 +1,145 @@
 import argparse
-#import yaml
+import yaml as yl
 import ruamel.yaml
 from .script_utils import *
+import os
 
-'''
-For now we let default be defined here.
-Later we will move default parameters localy corresponding to each class and import them at loading time
-'''
-default_args = {'mode': 'Training', 
-                'dataset_dir': '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/', 
-                'task': 'Segmentation', 
-                'n_class': 4, 
-                'categories': ['cat0', 'cat1', 'cat2', 'cat3'], 
-                'limit_sample': 'None', 
-                'batch_size': 2, 
-                'nb_epoch': 1, 
-                'learning_rate': '5e-05', 
-                'device': 'cuda', 
-                'random_seed': 2022, 
-                'verbose': 'Full', 
-                'export_config': True}
+utils_folder = os.path.dirname(os.path.realpath(__file__))
+default_config_file = os.path.join(utils_folder, "default_config.yaml")
 
-def parse_args():
-    """
-    A parser that combines default arguments with cli arguments and config file arguments
-    """
-    
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--config_file", type=str, default="/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml")
-    # Global config
-    parser.add_argument("--mode", type=str) # Training, Evaluation, Inference,
-    parser.add_argument("--export_config", type=str, help="test")
+
+
+def createGlobalParser():
+    parser = argparse.ArgumentParser(add_help=False, argument_default=argparse.SUPPRESS, conflict_handler='resolve')    
     # Data information
-    parser.add_argument("--dataset_dir", type=str)
-    parser.add_argument("--task", type=str, default="THIS IS A TEST")
-    parser.add_argument("--n_class", type=int)
-    parser.add_argument("--categories", type=list)
-    parser.add_argument("--limit_sample", type=int)
-    # Training information
-    parser.add_argument("--batch_size", type=int)
-    parser.add_argument("--nb_epoch", type=int)
-    parser.add_argument("--lr", type=float)
-    parser.add_argument("--device", type=arg2device)
-    cli_args = parser.parse_args()
-    cli_args = vars(cli_args)
-    
-    #args = {key: value[:] for key, value in default_args.items()}
-    args = dict(default_args)
+    global_args = parser.add_argument_group('Global arguments')
+    global_args.add_argument("--config_file", type=str, default=None) # default="./test_config.yaml"
+    global_args.add_argument("--export_config", type=arg2path, help="test") # why str ?
+    global_args.add_argument("--mode", type=str)
+    global_args.add_argument("--verbose", type=str)
 
-    if cli_args["config_file"] is not None :
-        yaml = ruamel.yaml.YAML(typ='safe')
-        yaml.preserve_quotes = True
-        with open(cli_args["config_file"]) as cf:
-            config_file_args  = yaml.load(cf)
-        config_file_args = read_yaml(cli_args["config_file"])
-        args.update(config_file_args)
-    #args.update(cli_args)
-    args.update({k: v for k, v in cli_args.items() if v is not None})  # Update with cli_args if arg is not None, alternative use argparse.SUPPRESS
-    
-    print("Final Args:", args)
-    
-    
+    return parser
+
+def parse_cli(parents=[]):
+    """
+    A CLI arguments parser
+    Reads sys.argv and returns a dict of arguments
+    Combines global args with parents args
+    Args :
+        parents : parents ArgumentParser
+    Returns :
+        cli_config : a dict of args coming from CLI
+    """
+    parser = argparse.ArgumentParser(add_help = True, parents = parents, argument_default=argparse.SUPPRESS, conflict_handler='resolve') 
+    # Use parents to heridate arguments from others objets (Managers)
+    # Instead of a list of args, args should be splitted in each class with an init args (cf Mickael implementation)
+    # Global config
+    '''
+    global_args = parser.add_argument_group('Global arguments')
+    global_args.add_argument("--config_file", type=str, default=None) # default="./test_config.yaml"
+    global_args.add_argument("--export_config", type=arg2path, help="test") # why str ?
+    global_args.add_argument("--mode", type=str)
+    global_args.add_argument("--verbose", type=str)
+    '''
+    #parser._action_groups.reverse()
+    cli_args = parser.parse_args()
+    cli_config = vars(cli_args)
+    return cli_config
+
+def parse_yaml_file(file_path):
+    yaml = ruamel.yaml.YAML(typ='safe')
+    yaml.preserve_quotes = True
+    with open(file_path) as cf:
+        config_file  = yaml.load(cf)
+    config_file = read_yaml(file_path)
+    return config_file
+
+def export_yaml_config(config, yaml_template_path = default_config_file, export_path = False):
     '''
     Auto-modification of a predefined config file seems to work well with ruyaml even supporting extra arguments that were not initialy present in the file (added at the end)
+    Args :
+        config : a dict of args and corresponding value 
+        yaml_template_path : a path to a yaml file that serves as a template for comments and args positions
+        export_path : path where config file must be saved
+    Return : 
+        export_path : path where config file is saved
     '''
-    if args["export_config"]:
-        ruyaml = ruamel.yaml.YAML()#typ='safe'
-        ruyaml.preserve_quotes = True
-        with open(cli_args["config_file"]) as cf:
-            config_file_args  = ruyaml.load(cf)
-        print(config_file_args)
-        config_file_args.update(args)
-        with open('config_saved.yaml', 'w') as file:
-             ruyaml.dump(config_file_args, file)
-        #with open('config_used.yaml', 'w') as file:
-            #config_used = yaml.dump(args, stream=file,default_flow_style=False, sort_keys=False)        
+
+    # RUYAML class handling yaml files    
+    ruyaml = ruamel.yaml.YAML()
+    #typ='rt' (which is the default) inherit the safe type to manage comments. So it should be safe. Problem we appear if we want to allow loading any class/code with type='unsafe'
+    ruyaml.preserve_quotes = True
     
-    return args
+    # Retrieve the template file
+    with open(yaml_template_path) as cf:
+        config_file = ruyaml.load(cf)
+    
+    # Update it with user config
+    config_file.update(config)
 
+    # Save config to YAML file
+    with open(export_path, 'w') as file:
+        ruyaml.dump(config_file, file)
+        #config_used = yaml.dump(args, stream=file,default_flow_style=False, sort_keys=False) #no comments preserved with simple yaml         
+
+    return export_path
+
+def parse_config(parents=[]):
+    """
+    A parser that combines default arguments with cli arguments and config file arguments
+    CLI args overwrite config_file args which overwrite default args.
+    """
+    # Load default config
+    default_config = parse_yaml_file(default_config_file)
+
+    # Retrieve CLI arguments
+    cli_config = parse_cli(parents)
+
+    # If user gave a config file, update config with config file
+    config_file = dict()
+    if cli_config["config_file"] is not None :
+        config_file = parse_yaml_file(cli_config["config_file"])
+     
+    # Combine default config, config file and cli
+    #args = {key: value[:] for key, value in default_args.items()}
+    config = default_config.copy()
+    config.update(config_file)
+    config.update(cli_config) #use argparse.SUPPRESS as default values for args, CAREFUL ADD DEFAULT SUPRESS ALSO IN PARENTS
+    #config.update({k: v for k, v in cli_config.items() if v is not None})  # Update with cli_config if arg is not None
+    
+    if config["export_config"] is not None:
+        export_yaml_config(config, default_config_file, config["export_config"])
+
+    #print("\ndefault config YAML: ", default_config)
+    #print("\nCLI args: ", cli_config)
+    #print("\nfrom file", config_file)
+    #print("\nFinal config: ", config)
+    
+    
+    return config
 
 
 '''
-    parser.add_argument("--mode", type=str, default="Training") # Training, Evaluation, Inference,
-    # Global config
-    parser.add_argument("--config_file", type=str, default="/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml")
-    parser.add_argument("--export_config", type=str, default="/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config_export.yaml")
-    # Data information
-    parser.add_argument("--dataset_dir", type=str, default="/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/")
-    parser.add_argument("--dataset_type", type=str, default="Segmentation")
-    # Training information
-    parser.add_argument("--limit_sample", type=int)
-    parser.add_argument("--batch_size", type=int, default=2)
-    parser.add_argument("--nb_epoch", type=int, default=1)
-    parser.add_argument("--n_class", type=int, default=4)
-    parser.add_argument("--lr", type=float, default=5e-05)
-    parser.add_argument("--device", type=arg2device, default="cuda")
+# Default config has been moved to default_config.yaml in plug_ai/utils. (not with exact params)
+default_config = {
+    'mode': 'Training',
+    'model_name': 'model_test',
+    'dataset_dir': '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/',
+    'task': 'Segmentation',
+    'categories': ['cat0', 'cat1', 'cat2', 'cat3'],
+    'limit_sample': 'None',
+    'batch_size': 2,
+    'nb_epoch': 1,
+    'learning_rate': '5e-05',
+    'device': 'cuda',
+    'random_seed': 2022,
+    'verbose': 'Full',
+    'export_config': False,
+    'report_log': False,
+    'checkpoints_path': './checkpoints',
+    'model_type': 'DynUnet',
+    'model_args': None,
+    'model_kwargs': None,
+    'res_out': False # Use the residual output of Unet (not working for now)
+}
 '''
-

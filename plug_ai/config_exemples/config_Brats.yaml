@@ -1,18 +1,18 @@
 # Default config is used if no config file is specified in CLI. Undefined arguments will take the default values.
-# default_config_file: /gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml
+# default_config_file: /gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config_BrainTumour.yaml
 
 
 mode: Training # Choose between Training, Evaluation, Inference
 
-dataset_dir: /gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/ # Absolute path to the dataset root dir
+dataset_dir: /gpfswork/rech/ibu/commun/BraTS2021/BraTS2021_Training_Data/ # Absolute path to the dataset root dir
 task: THIS IS A TEST #defines the type of dataset and task to accomplish. We will have to define the structure of the dataset according to each task and do some auto-selection of models accordingly
-n_class: 4
 categories:
 - cat0
 - cat1
 - cat2
 - cat3
-limit_sample: None
+- cat4
+limit_sample: 20
 
 #Training settings
 batch_size: 2
@@ -25,7 +25,17 @@ random_seed: 2022  # None for real randomness, set an integer for reproductibili
 
 # Reporting settings
 verbose: Full #Full, Restricted, None
-export_config: true
+export_config: false
 
 
-config_file: /gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml
+model_name: model_test
+report_log: False
+checkpoints_path: ./checkpoints
+config_file: ./config_Brats.yaml
+
+not_in_cli_arg: test_value # with test comments
+
+not_in_cli_arg_safe: test_value_safe # with test comments
+
+transforms_kwars :
+    transform_val1
