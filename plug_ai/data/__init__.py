@@ -6,7 +6,7 @@ from .MedNIST import MedNIST
 
 supported_datasets = {
     'BraTS' :  BraTS,
-    'MedNIST' : None,
+    'MedNIST' : MedNIST,
     'Decathlon' : None,
     'TciaDataset' : None,
     'Specific_Dataset_A' : get_dataset_a,

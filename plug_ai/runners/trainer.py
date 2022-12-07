@@ -1,59 +1,76 @@
 import torch
+from ..utils.script_utils import filter_dict, print_verbose
 
-class Trainer:
+class Default_Trainer:
     def __init__(self, 
                  train_loader,
                  model,
-                 optimizer=None,
+                 optimizer,
+                 criterion,                 
                  optimizer_kwargs = {},
-                 criterion=None,
                  criterion_kwargs = {},
                  nb_epoch=2,
                  device="cuda",
-                 !!!!!!!!!!!!!
-                train_loop,
-                infer_loop,
-                step_,
+                 train_step = "default",
+                 verbose = "RESTRICTED",
+                 report_log = False
                 ):
-        
+        #train_loop,
+        #infer_loop,
+        #step_,
         print("Training ...")
         self.train_loader = train_loader
         self.model = model
         self.nb_epoch = nb_epoch
         self.device = device
+        
+        # To be moved in a selector
+        self.train_step = train_step
+        if train_step == "default":
+            self.train_step = self.default_training_step
+        
+        self.verbose = verbose
+        self.report_log = report_log
+        self.model_name = "TEST_MODEL_NAME"
+
+        # Instantiation done here but I believe it is more "standard" that the train loop receives both model, criterion and optimizer initialized for the situation B where a dev gives his own loop
+        # but for a situation like criterion being a callable that returns multiple criterions to be used in the train loop, if reading was done in training loop, would be no problem with this special case.
+        criterion_kwargs_filtered = filter_dict(criterion, criterion_kwargs)
+        self.criterion = criterion(**criterion_kwargs_filtered)
+
+        optimizer_kwargs_filtered = filter_dict(optimizer, optimizer_kwargs)
+        self.optimizer = optimizer(self.model.parameters(), **optimizer_kwargs_filtered)
+        
+        print_verbose("Criterion is :", self.criterion, 
+                      print_lvl = "RESTRICTED", 
+                      verbose_lvl = self.verbose)
+        print_verbose("Optimizer is :", self.optimizer, 
+                      print_lvl = "RESTRICTED", 
+                      verbose_lvl = self.verbose)        
+        
+        if self.report_log:
+            self.writer = SummaryWriter(f'./report_log/{self.model_name}')
+            print("recording tensorboard logs")
+        
+        outputs = self.run()# model name, report log,... => train_loop kwargs
+        
+        return outputs
+
+    def run(self):
+        total_train_step = len(self.train_loader)
+        print(f"start training loop, {total_train_step} steps per epoch")
+        
 
         
-        train_loop(self.train_loader, self.model, self.optimizer, self.criterion, self.nb_epoch, self.device)
-
-    @staticmethod
-    def run(train_loader, model, optimizer, criterion, nb_epoch, device, train_step, report_log):
-        total_train_step = len(train_loader)
-        print(f"start training loop, {total_train_step} steps per epoch")
-        model.train()
-        for epoch in range(nb_epoch):
-            for i, x in enumerate(train_loader):
-                loss = self.training_step(sample)
-
-                optimizer.zero_grad()
-
-                inp = x["input"].to(device)
-                targets = x["label"].to(device)
-
-                out = model(inp)
-                out = torch.unbind(out, dim=1)
-                loss = criterion(out[0], targets)
-
-                loss.backward()
-                optimizer.step()
-
-                print(f'[Epoch {epoch+1}/{nb_epoch} |  Step_Epoch {i+1}/{total_train_step} | Loss {loss.item()}]')
-
-
+        for epoch in range(self.nb_epoch):
+            self.model.train()
+            for i, sample in enumerate(self.train_loader):
                 
+                loss = self.train_step(sample)
 
-                print(f'[Epoch {epoch + 1}/{self.nb_epoch} |  Step_Epoch {i + 1}/{total_train_step} | Loss {loss.item()}]')
+                print(f'[Epoch {epoch+1}/{self.nb_epoch} |  Step_Epoch {i+1}/{total_train_step} | Loss {loss.item()}]')
 
-                if report_log:
+                if self.report_log:
                     self.writer.add_scalar('Loss/train', loss.item(), i + epoch * total_train_step)
 
             # Evaluation here (not implemented yet)
@@ -63,3 +80,38 @@ class Trainer:
             print(f"Epoch {epoch} finished")
 
         return model
+    
+    
+    def default_training_step(self, sample):
+        """
+        :param sample:
+        :return:
+        """
+        self.optimizer.zero_grad()
+
+        output = self.inference_step(sample["input"])
+        loss = self.criterion(output, sample["label"].to(self.device))
+
+        loss.backward()
+        self.optimizer.step()
+
+        return loss
+
+    def inference_step(self, sample_inp):
+        """
+        Infer on one sample with the model
+        :param sample_inp: torch.Tensor
+        :return: torch.Tensor
+        """
+
+        sample_inp = sample_inp.to(self.device)
+        return self.model(sample_inp)
+
+#### same selection for train for loop and infer for loop
+#### same for inference step
+'''
+if isinstance(train_step, callable):
+    self.output = train_step(**execution_kwargs)
+else:
+    self.train_step = plugai.train_step
+'''

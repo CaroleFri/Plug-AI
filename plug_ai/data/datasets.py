@@ -12,7 +12,6 @@ from monai.transforms import Compose, EnsureChannelFirstd, LoadImaged, SpatialCr
 
 
 
-
 def get_dataset_a(a=1, b=2):
     print("this is dataset a")
     dataset = [a,b]

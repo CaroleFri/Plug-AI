@@ -20,7 +20,7 @@ class BraTS:
         #self.kwargs = kwargs
         
         if self.download_dataset:
-            self.dataset_dir = self.download()
+            self.download()
         
         self.dataset = self.get_dataset(self.dataset_dir, self.limit_sample, self.transformation, self.mode)
         

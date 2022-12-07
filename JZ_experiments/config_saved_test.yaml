@@ -4,9 +4,8 @@
 # IDEA: MAKE DEFAULT CONFIG TRIGGER INDICATIONS PROGRESSIVELY ON HOW TO USE PLUG_AI (MISSING ARGUMENTS WHICH LEAD TO ERRORS?)
 
 ##################################################################################################
+######################################## Data arguments : ########################################
 ##################################################################################################
-##################################################################################################
-# Data arguments:
 # We must define precisely which arguments must be "mandatory" and are related to our general pipeline and which are related
 # to the dataset class specificaly
 dataset: BraTS # Maybe include it in dataset_kwargs.
@@ -23,6 +22,7 @@ dataset_kwargs:
   task: THIS IS A TEST
   transformation: BraTS_transform
 preprocess: false
+preprocess_kwargs:
 #We will have to define the structure of the dataset according to each task and do some auto-selection of models accordingly
 generate_signature: true
 train_ratio: 0.8 # How to specify the split?
@@ -32,68 +32,59 @@ limit_sample: 20
 batch_size: 2
 shuffle: true
 drop_last: true
-verbose: Full #Full, Restricted, None
 
 
 ##################################################################################################
+####################################### Model arguments : ########################################
 ##################################################################################################
-##################################################################################################
-# Model arguments:
+
 model: DynUnet
 checkpoints_path: ./checkpoints
 use_signature: false
 res_out: false
+# probably integrate res_out as a model_kwargs 
 model_kwargs:
     #model_type MODEL_TYPE
     #model_args MODEL_ARGS
+
 ##################################################################################################
+##################################### Execution arguments : ######################################
 ##################################################################################################
-##################################################################################################
-# Execution arguments:
+#Training settings
 nb_epoch: 1
 learning_rate: '5e-05' #lr, learning rate, either a value or a string in "list of strategies"
 device: cuda
 random_seed: 2022  # None for real randomness, set an integer for reproductibility
 report_log: false
 
-#Global arguments:
-#config_file:
-#config_file: ./config_Brats.yaml
-export_config: /gpfsdswork/projects/rech/ibu/ssos023/Plug-AI/JZ_experiments/config_saved_test.yaml
-mode: Training # Choose between Training, Evaluation, Inference
+execution_kwargs:
+
+
+# You can choose between "Default", or a criterion in the list of valid optimizers.
+# Complete optimizer_kwargs according to the args needed for the optimizer you selected
+# "Default" option do not make use of any kwargs
+loop: Default
+loop_kwargs:
+  step: Default
 optimizer: SGD
 optimizer_kwargs:
   lr: 0.0001
   momentum: 0.99
-  weight_decay: '3e-5'
+  weight_decay: 3e-05
   nesterov: true
-execution_kwargs:
+criterion: DiceCELoss
+criterion_kwargs:
+  to_onehot_y: true
+  softmax: true
+config_file:
+export_config: /gpfsdswork/projects/rech/ibu/ssos023/Plug-AI/JZ_experiments/config_saved_test.yaml
+mode: TRAINING # Choose between Training, Evaluation, Inference
+verbose: RESTRICTED #Full, Restricted, None
+seed:
 
-
-#Training settings
-# Execution settings
-
-# Reporting settings
-
-
-
+#Global arguments:
+#config_file:
+#config_file: ./config_Brats.yaml
 ##################################################################################################
+######################################## Extra arguments : #######################################
 ##################################################################################################
-##################################################################################################
-# Global arguments:
-global:
-  mode: Training
-  verbose: Full
-dataset_dir: /gpfswork/rech/ibu/commun/BraTS2021/BraTS2021_Training_Data/
-task: THIS IS A TEST
-categories:
-- cat0
-- cat1
-- cat2
-- cat3
-- cat4
-model_name: model_test
-config_file: /gpfsdswork/projects/rech/ibu/ssos023/Plug-AI/plug_ai/config_exemples/config_Brats.yaml
-not_in_cli_arg: test_value
-not_in_cli_arg_safe: test_value_safe
-transforms_kwars: transform_val1

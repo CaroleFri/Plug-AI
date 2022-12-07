@@ -7,52 +7,125 @@ import os
 utils_folder = os.path.dirname(os.path.realpath(__file__))
 default_config_file = os.path.join(utils_folder, "default_config.yaml")
 
-
+import sys
 
 def createGlobalParser():
+    """
+    A parser to use as a parent parser to handle conflicts and put args that are present in multiple other parents in a global section.
+    """
     parser = argparse.ArgumentParser(add_help=False, argument_default=argparse.SUPPRESS, conflict_handler='resolve')    
-    # Data information
+    # Global config
     global_args = parser.add_argument_group('Global arguments')
     global_args.add_argument("--config_file", type=str, default=None) # default="./test_config.yaml"
     global_args.add_argument("--export_config", type=arg2path, help="test") # why str ?
     global_args.add_argument("--mode", type=str)
+    global_args.add_argument("--seed", type=int)
     global_args.add_argument("--verbose", type=str)
-
     return parser
 
-def parse_cli(parents=[]):
+def cli2config(parents=[]):
     """
-    A CLI arguments parser
+    A CLI arguments reader
     Reads sys.argv and returns a dict of arguments
     Combines global args with parents args
     Args :
         parents : parents ArgumentParser
     Returns :
-        cli_config : a dict of args coming from CLI
+        cli_config : a dict of args read from CLI
     """
-    parser = argparse.ArgumentParser(add_help = True, parents = parents, argument_default=argparse.SUPPRESS, conflict_handler='resolve') 
-    # Use parents to heridate arguments from others objets (Managers)
-    # Instead of a list of args, args should be splitted in each class with an init args (cf Mickael implementation)
-    # Global config
-    '''
-    global_args = parser.add_argument_group('Global arguments')
-    global_args.add_argument("--config_file", type=str, default=None) # default="./test_config.yaml"
-    global_args.add_argument("--export_config", type=arg2path, help="test") # why str ?
-    global_args.add_argument("--mode", type=str)
-    global_args.add_argument("--verbose", type=str)
-    '''
-    #parser._action_groups.reverse()
+    parser = argparse.ArgumentParser(add_help = True, 
+                                     parents = parents, 
+                                     argument_default=argparse.SUPPRESS, 
+                                     conflict_handler='resolve') 
     cli_args = parser.parse_args()
     cli_config = vars(cli_args)
     return cli_config
 
-def parse_yaml_file(file_path):
-    yaml = ruamel.yaml.YAML(typ='safe')
-    yaml.preserve_quotes = True
-    with open(file_path) as cf:
-        config_file  = yaml.load(cf)
+def yaml2config(file_path, parents = []):
+    """
+    A yaml arguments parser
+    Args :
+        parents : parents ArgumentParser
+    Returns :
+        cli_config : a dict of args parsed from CLI
+    """
+
     config_file = read_yaml(file_path)
+    
+    # 1st approach : reuse cli parsing for yaml, means that we do not use a yaml file but a cli file
+    '''
+    parser = argparse.ArgumentParser(add_help = False, 
+                                     parents = parents, 
+                                     argument_default=argparse.SUPPRESS, 
+                                     conflict_handler='resolve')
+    
+    vals = []
+    for k,v in config_file.items():
+        vals.append(f"--{k}")
+        vals.append(f"{v}")
+    print(vals)
+    print("SYS",sys.argv[1:])
+
+    file_args = parser.parse_args(vals)
+    file_config = vars(file_args)
+
+    '''
+    # 2nd approach to have 2 different parsing for cli and yaml files
+    #config_file = check_parse_config(config_file) 
     return config_file
+
+def check_parse_config(config = {}, source="CLI"):
+    """
+    Checks and parses a given config to return appropriate classes for each attribute
+    Args :
+        config : the config to type check and parse 
+        source : the source from where the config is config from. WIP : indicate the error the source
+    Returns :
+        config_parsed : a dict of args read from CLI and updated using plug_ai rules
+    """
+    config_parsed = dict()
+    
+    keys2parser = {"dataset" : str,
+                   "dataset_kwargs" : arg2dict,
+                   "preprocess" : str,
+                   "preprocess_kwargs" : arg2dict,
+                   "generate_signature" : arg2bool, 
+                   "batch_size" : int,
+                   "limit_sample" : int,
+                   "shuffle" : arg2bool,
+                   "drop_last" : arg2bool,
+                   
+                   "model" : str,
+                   "checkpoints_path" : str,
+                   "model_kwargs" : arg2dict,
+                   "use_signature" : arg2bool,
+                   "res_out" : arg2bool,
+                   
+                   "loop" : arg2loop,
+                   "loop_kwargs" : arg2dict,
+                   "nb_epoch" : int,
+                   "learning_rate" : float,
+                   "device" : arg2device,
+                   "report_log" : arg2bool,
+                   "criterion" : arg2criterion,
+                   "criterion_kwargs" : arg2dict,
+                   "optimizer" : arg2optimizer,
+                   "optimizer_kwargs" : arg2dict,
+                   "execution_kwargs" : arg2dict, 
+
+                   "config_file" : str,
+                   "export_config" : arg2path,
+                   "mode" : arg2mode,
+                   "seed" : arg2seed,
+                   "verbose" : arg2verbose}
+    
+    for key in config.keys():
+        if key in keys2parser.keys():
+            config_parsed[key] = keys2parser[key](config[key])
+            
+    return config_parsed
+        
+        
 
 def export_yaml_config(config, yaml_template_path = default_config_file, export_path = False):
     '''
@@ -84,22 +157,29 @@ def export_yaml_config(config, yaml_template_path = default_config_file, export_
 
     return export_path
 
+
 def parse_config(parents=[]):
     """
     A parser that combines default arguments with cli arguments and config file arguments
     CLI args overwrite config_file args which overwrite default args.
     """
-    # Load default config
-    default_config = parse_yaml_file(default_config_file)
-
     # Retrieve CLI arguments
-    cli_config = parse_cli(parents)
+    cli_config = cli2config(parents)
+    check_parse_config(config = cli_config, source = "CLI") # Only check
+    
+    
+    # Load default config
+    default_config = yaml2config(default_config_file, parents)
+    check_parse_config(config = default_config, source = "Default config") # Only check
+    
 
     # If user gave a config file, update config with config file
     config_file = dict()
     if cli_config["config_file"] is not None :
-        config_file = parse_yaml_file(cli_config["config_file"])
-     
+        config_file = yaml2config(cli_config["config_file"])
+        check_parse_config(config = config_file, source = "Config file") # Only check
+        # Add a check for config file in config file? Allow for config file cascade?
+        
     # Combine default config, config file and cli
     #args = {key: value[:] for key, value in default_args.items()}
     config = default_config.copy()
@@ -110,6 +190,9 @@ def parse_config(parents=[]):
     if config["export_config"] is not None:
         export_yaml_config(config, default_config_file, config["export_config"])
 
+    # Parsing is only done once to allow in YAML (specific classes cannot be saved...)
+    config = check_parse_config(config) 
+
     #print("\ndefault config YAML: ", default_config)
     #print("\nCLI args: ", cli_config)
     #print("\nfrom file", config_file)
@@ -118,28 +201,3 @@ def parse_config(parents=[]):
     
     return config
 
-
-'''
-# Default config has been moved to default_config.yaml in plug_ai/utils. (not with exact params)
-default_config = {
-    'mode': 'Training',
-    'model_name': 'model_test',
-    'dataset_dir': '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/',
-    'task': 'Segmentation',
-    'categories': ['cat0', 'cat1', 'cat2', 'cat3'],
-    'limit_sample': 'None',
-    'batch_size': 2,
-    'nb_epoch': 1,
-    'learning_rate': '5e-05',
-    'device': 'cuda',
-    'random_seed': 2022,
-    'verbose': 'Full',
-    'export_config': False,
-    'report_log': False,
-    'checkpoints_path': './checkpoints',
-    'model_type': 'DynUnet',
-    'model_args': None,
-    'model_kwargs': None,
-    'res_out': False # Use the residual output of Unet (not working for now)
-}
-'''
