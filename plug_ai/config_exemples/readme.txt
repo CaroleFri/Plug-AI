@@ -1,0 +1,1 @@
+In this folder are available some configuration examples which can be run as is.

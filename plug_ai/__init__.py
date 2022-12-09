@@ -11,7 +11,6 @@ from . import loss
 from . import models
 from . import managers
 from . import data
-from . import infer
 from . import optim
 from . import report
 from . import runners

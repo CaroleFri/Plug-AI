@@ -1,23 +1,7 @@
 Loading pytorch-gpu/py3/1.10.1
   Loading requirement: cuda/11.2 nccl/2.9.6-1-cuda cudnn/8.1.1.33-cuda gcc/8.4.1
     openmpi/4.1.1-cuda intel-mkl/2020.4 magma/2.5.4-cuda sox/14.4.2
-+ srun python /gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/main.py --dataset_dir /gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/ --limit_sample 20 --batch_size 2 --lr 0.0001
++ srun python /gpfswork/rech/ibu/ssos023/Plug-AI/JZ_experiments/main.py --dataset_dir /gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/ --limit_sample 20 --batch_size 2 --lr 0.0001
 Final Args: {'mode': 'Training', 'dataset_dir': '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/', 'task': 'THIS IS A TEST', 'n_class': 4, 'categories': ['cat0', 'cat1', 'cat2', 'cat3'], 'limit_sample': 20, 'batch_size': 2, 'nb_epoch': 1, 'learning_rate': '5e-05', 'device': 'cuda', 'random_seed': 2022, 'verbose': 'Full', 'export_config': True, 'config_file': '/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml', 'lr': 0.0001}
 ordereddict([('mode', 'Training'), ('dataset_dir', '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/'), ('task', 'Segmentation'), ('n_class', 4), ('categories', ['cat0', 'cat1', 'cat2', 'cat3']), ('limit_sample', 'None'), ('batch_size', 2), ('nb_epoch', 1), ('learning_rate', 5e-05), ('device', 'cuda'), ('random_seed', 2022), ('verbose', 'Full'), ('export_config', True)])
-Initialize training
-loading dataset...
-got datalist, extract: 
- {'channel_0': '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/imagesTr/BRATS_001.nii.gz', 'label': '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/labelsTr/BRATS_001.nii.gz'}
-dataset loaded ! Loading model...
-Model loaded ! Initialize training...
-start training loop, 10 steps per epoch
-[Epoch 1/1 |  Step_Epoch 1/10 | Loss 2.5674943923950195]
-[Epoch 1/1 |  Step_Epoch 2/10 | Loss 2.533360481262207]
-[Epoch 1/1 |  Step_Epoch 3/10 | Loss 2.509921073913574]
-[Epoch 1/1 |  Step_Epoch 4/10 | Loss 2.5486364364624023]
-[Epoch 1/1 |  Step_Epoch 5/10 | Loss 2.48443865776062]
-[Epoch 1/1 |  Step_Epoch 6/10 | Loss 2.548760414123535]
-[Epoch 1/1 |  Step_Epoch 7/10 | Loss 2.542332649230957]
-[Epoch 1/1 |  Step_Epoch 8/10 | Loss 2.5000181198120117]
-[Epoch 1/1 |  Step_Epoch 9/10 | Loss 2.4765076637268066]
-[Epoch 1/1 |  Step_Epoch 10/10 | Loss 2.4782376289367676]
+{'mode': 'Training', 'dataset_dir': '/gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/', 'task': 'THIS IS A TEST', 'n_class': 4, 'categories': ['cat0', 'cat1', 'cat2', 'cat3'], 'limit_sample': 20, 'batch_size': 2, 'nb_epoch': 1, 'learning_rate': '5e-05', 'device': 'cuda', 'random_seed': 2022, 'verbose': 'Full', 'export_config': True, 'config_file': '/gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config.yaml', 'lr': 0.0001}

@@ -19,7 +19,9 @@ import plug_ai
 
 
 def main(kwargs):
-    print("Plug-AI running :")
+    print("Plug-AI running with config:")
+    [print('\t', key,':',value) for key, value in kwargs.items()]
+    
     start = datetime.now()
 
     # HOW TO ADD AN AUTO BATCH_SIZE? Not possible before loading/estimating model size...
@@ -34,29 +36,33 @@ def main(kwargs):
                                                       preprocess = kwargs["preprocess"],
                                                       preprocess_kwargs = kwargs["preprocess_kwargs"],
                                                       mode = kwargs["mode"],
-                                                      generate_signature = kwargs["generate_signature"],
-                                                      limit_sample = kwargs["limit_sample"],
                                                       batch_size = kwargs["batch_size"],
+                                                      train_ratio = kwargs["train_ratio"],
+                                                      val_ratio = kwargs["val_ratio"],
+                                                      limit_sample = kwargs["limit_sample"],
                                                       shuffle = kwargs["shuffle"],
                                                       drop_last = kwargs["drop_last"],
-                                                      seed = kwargs["seed"],
+                                                      seed = kwargs["seed"], # doit permettre de fixer toutes les seed:  A généraliser
                                                       verbose = kwargs["verbose"])
     
+    #generate_signature = kwargs["generate_signature"], # à potentiellement déplacer soit dans dataset_kwargs (dataset method) ou laisser gérer par manager
+    
+    
     # Model_manager contains the model. adapted to the dataset signature if user asked for it
-    model_manager = plug_ai.managers.ModelManager(plug_dataset = dataset_manager,
+    model_manager = plug_ai.managers.ModelManager(plug_dataset = dataset_manager, # à dégager
                                                   model = kwargs["model"],
-                                                  checkpoints_path = kwargs["checkpoints_path"],
                                                   model_kwargs = kwargs["model_kwargs"],
                                                   mode = kwargs["mode"],
-                                                  use_signature = kwargs["use_signature"],
-                                                  res_out = kwargs["res_out"],
                                                   verbose = kwargs["verbose"])
-    
+    #                                              use_signature = kwargs["use_signature"], # a bouger dans model_kwargs
+    #                                              checkpoints_path = kwargs["checkpoints_path"],
+    #                                              res_out = kwargs["res_out"],
+
     # Execution_manager runs a training/evaluation/inference process. 
     # Some parameters such as batch_size="auto" will run first a finding params loop.
     execution_manager = plug_ai.managers.ExecutionManager(dataset_manager = dataset_manager, 
                                                           model_manager = model_manager,
-                                                          loop = kwargs["loop"],
+                                                          loop = kwargs["loop"], # txt | callable (doit respecter un formalisme)
                                                           loop_kwargs = kwargs["loop_kwargs"],
                                                           mode = kwargs["mode"],
                                                           nb_epoch = kwargs["nb_epoch"],
@@ -64,11 +70,10 @@ def main(kwargs):
                                                           device = kwargs["device"],
                                                           seed = kwargs["seed"],
                                                           report_log = kwargs["report_log"],
-                                                          criterion = kwargs["criterion"],
+                                                          criterion = kwargs["criterion"], # txt | callable | instance herite loss pytorch
                                                           criterion_kwargs = kwargs["criterion_kwargs"], 
-                                                          optimizer = kwargs["optimizer"],
+                                                          optimizer = kwargs["optimizer"], # txt | callable
                                                           optimizer_kwargs = kwargs["optimizer_kwargs"],
-                                                          execution_kwargs = kwargs["execution_kwargs"],
                                                           verbose = kwargs["verbose"])
 
     
@@ -87,5 +92,5 @@ if __name__ == '__main__':
                                                    plug_ai.managers.ModelManager.createParser(),
                                                    plug_ai.managers.ExecutionManager.createParser(),
                                                    plug_ai.utils.parser.createGlobalParser()
-                                                  ]) 
+                                                  ])
     main(config)

@@ -12,6 +12,7 @@ class Default_Trainer:
                  nb_epoch=2,
                  device="cuda",
                  train_step = "default",
+                 step_kwargs = {},
                  verbose = "RESTRICTED",
                  report_log = False
                 ):
@@ -28,10 +29,10 @@ class Default_Trainer:
         self.train_step = train_step
         if train_step == "default":
             self.train_step = self.default_training_step
-        
+        self.step_kwargs = filter_dict(self.train_step, step_kwargs) #Should this check be done? Responsability is up to who?
         self.verbose = verbose
         self.report_log = report_log
-        self.model_name = "TEST_MODEL_NAME"
+        self.model_name = "TEST_MODEL_NAME" # => to be moved in a global experiment_name used for everything saved
 
         # Instantiation done here but I believe it is more "standard" that the train loop receives both model, criterion and optimizer initialized for the situation B where a dev gives his own loop
         # but for a situation like criterion being a callable that returns multiple criterions to be used in the train loop, if reading was done in training loop, would be no problem with this special case.
@@ -52,9 +53,9 @@ class Default_Trainer:
             self.writer = SummaryWriter(f'./report_log/{self.model_name}')
             print("recording tensorboard logs")
         
-        outputs = self.run()# model name, report log,... => train_loop kwargs
+        self.run()# model name, report log,... => train_loop kwargs
         
-        return outputs
+
 
     def run(self):
         total_train_step = len(self.train_loader)
@@ -64,6 +65,7 @@ class Default_Trainer:
         
         for epoch in range(self.nb_epoch):
             self.model.train()
+            
             for i, sample in enumerate(self.train_loader):
                 
                 loss = self.train_step(sample)
@@ -79,7 +81,7 @@ class Default_Trainer:
 
             print(f"Epoch {epoch} finished")
 
-        return model
+        
     
     
     def default_training_step(self, sample):

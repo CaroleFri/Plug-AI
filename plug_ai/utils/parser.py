@@ -16,11 +16,14 @@ def createGlobalParser():
     parser = argparse.ArgumentParser(add_help=False, argument_default=argparse.SUPPRESS, conflict_handler='resolve')    
     # Global config
     global_args = parser.add_argument_group('Global arguments')
-    global_args.add_argument("--config_file", type=str, default=None) # default="./test_config.yaml"
-    global_args.add_argument("--export_config", type=arg2path, help="test") # why str ?
-    global_args.add_argument("--mode", type=str)
-    global_args.add_argument("--seed", type=int)
-    global_args.add_argument("--verbose", type=str)
+    global_args.add_argument("--config_file", type=str, default=None, help = '''Path : The config file to set parameters more 
+    easily''') # default="./test_config.yaml"
+    global_args.add_argument("--export_config", type=arg2path, help='''Path : If given, save the full config(combining CLI and 
+                                                                    config file) at the given path''') # why str ?
+    global_args.add_argument("--mode", type=str, help = '''String : A mode between "TRAINING", "EVALUATION" and "INFERENCE"''')
+    global_args.add_argument("--seed", type=int, help = '''Int : If given, sets random aspect by setting random numbers
+                                                        generators''')
+    global_args.add_argument("--verbose", type=str, help = '''String or None: The level of verbose wanted. None, "RESTRICTED" or "FULL"''')
     return parser
 
 def cli2config(parents=[]):
@@ -91,6 +94,8 @@ def check_parse_config(config = {}, source="CLI"):
                    "preprocess_kwargs" : arg2dict,
                    "generate_signature" : arg2bool, 
                    "batch_size" : int,
+                   "train_ratio" : float,
+                   "val_ratio" : float, #Will need checkers for ratios
                    "limit_sample" : int,
                    "shuffle" : arg2bool,
                    "drop_last" : arg2bool,
@@ -190,8 +195,8 @@ def parse_config(parents=[]):
     if config["export_config"] is not None:
         export_yaml_config(config, default_config_file, config["export_config"])
 
-    # Parsing is only done once to allow in YAML (specific classes cannot be saved...)
-    config = check_parse_config(config) 
+    # Parsing is only done once to allow saving in YAML (specific classes cannot be saved...)
+    # config = check_parse_config(config) 
 
     #print("\ndefault config YAML: ", default_config)
     #print("\nCLI args: ", cli_config)

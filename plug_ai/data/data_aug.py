@@ -14,7 +14,7 @@ class transforms_BraTS:
                          )
         ])
 
-        self.eval = Compose([
+        self.infer = Compose([
                         LoadImaged(keys=keys),  # To change when we have a real eval dataset
                         EnsureChannelFirstd(keys=keys),  # To change when we have a real eval dataset
                         ConcatItemsd(keys, "input"),  # To change when we have a real eval dataset

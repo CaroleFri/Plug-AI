@@ -22,6 +22,6 @@ module load pytorch-gpu/py3/1.10.1
 set -x
 
 # code execution
-srun python /gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/main.py \
+srun python /gpfswork/rech/ibu/ssos023/Plug-AI/JZ_experiments/main.py \
 --dataset_dir /gpfsscratch/idris/sos/ssos022/Medical/Task01_BrainTumour/ \
 --limit_sample 20 --batch_size 2 --lr 0.0001

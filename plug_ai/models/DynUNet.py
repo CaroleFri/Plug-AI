@@ -44,6 +44,9 @@ class PlugDynUNet(nn.Module):
         """
         super(PlugDynUNet, self).__init__()
         self.res_out = res_out
+        # use_signature: A boolean that should indicate if to use or not the signature of the dataset for adaptation
+        # res_out: A model specific parameter
+        #checkpoints_path: a path to checkpoints for the model
 
 
         self.base = DynUNet(spatial_dims = spatial_dims,
@@ -55,6 +58,17 @@ class PlugDynUNet(nn.Module):
                             norm_name = norm_name,
                             deep_supervision = deep_supervision,
                             deep_supr_num = deep_supr_num)
+        
+        '''
+        if self.use_signature is not None:
+            # WIP
+            available_signatures = {
+                "nnUnet" : None
+            }
+            if self.use_signature in available_signatures:
+                print("using signature to configure model")
+            #
+        '''    
 
     def forward(self, inp):
         """

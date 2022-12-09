@@ -22,8 +22,10 @@ def filter_dict(func, kwarg_dict):
 
         common_args = sign.intersection(kwarg_dict.keys())
         filtered_dict = {key: kwarg_dict[key] for key in common_args}
+         #rejected_dict = {key: kwarg_dict[key] for key not in sign} WIP
     else:
-        filtered_dict = dict()    
+        filtered_dict = dict()   
+    # WIP : Add a warning indicating that some kwargs have been unused
     return filtered_dict
 
 def call_func(class_method, kwargs):        
