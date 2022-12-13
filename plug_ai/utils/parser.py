@@ -6,6 +6,7 @@ import os
 
 utils_folder = os.path.dirname(os.path.realpath(__file__))
 default_config_file = os.path.join(utils_folder, "default_config.yaml")
+print("default config path", default_config_file)
 
 import sys
 
