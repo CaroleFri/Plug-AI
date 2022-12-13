@@ -12,7 +12,7 @@ dataset: BraTS
 dataset_kwargs:
     dataset_dir: /gpfswork/rech/ibu/commun/BraTS2021/BraTS2021_Training_Data/ # Absolute path to the dataset root dir
     download_dataset: false
-    task: THIS IS A TEST #defines the type of dataset and task to accomplish.
+    task: test_value_from_config_test #defines the type of dataset and task to accomplish.
     transformation: BraTS_transform
 preprocess: false
 preprocess_kwargs:
