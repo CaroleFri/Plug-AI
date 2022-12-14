@@ -3,3 +3,6 @@
 **__pycache__
 tests/plug_ai.out
 tests/plug_ai.slurm
+library_tests.ipynb
+stderr.txt
+stdout.txt

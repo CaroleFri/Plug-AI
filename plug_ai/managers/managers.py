@@ -21,6 +21,7 @@ import json
 
 verbose_decorator_0 = '{:=^100}'
 
+
 class DatasetManager:    
     @classmethod
     def createParser(cls):
@@ -269,7 +270,7 @@ class ModelManager:
                  device,
                  model_kwargs = {},
                  mode = "Training",
-                 verbose = False,
+                 verbose = "FULL",
                  ):
         #use_signature = False,
         #res_out = False,        
@@ -336,20 +337,7 @@ class ModelManager:
         if self.model_type not in self.list_model_type:
             raise ValueError(f"{self.model_type} is not in the list of PlugModel")
 
-    # def get_model(self):
-    #     """
-    #     Configure and return a model to Plug.
-    #     :return:
-    #     """
-    #
-    #     self.check_model_exists()
-    #     print(f"loading {self.model_type} model")
-    #     if self.model_type == "DynUnet":
-    #         model = PlugDynUNet(model_kwargs=self.model_kwargs, res_out=self.res_out).to(self.device)
-    #
-    #     return model
 
-    
 class ExecutionManager:
 
     @classmethod
@@ -391,7 +379,7 @@ class ExecutionManager:
                  criterion_kwargs = {},
                  optimizer = None,
                  optimizer_kwargs = {},
-                 verbose = False
+                 verbose = "FULL"
                 ):
         
 
