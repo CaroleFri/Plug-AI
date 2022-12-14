@@ -1,3 +1,5 @@
 **.ipynb_checkpoints
 **.idea
 **__pycache__
+tests/plug_ai.out
+tests/plug_ai.slurm

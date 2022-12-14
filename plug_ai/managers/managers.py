@@ -266,9 +266,11 @@ class ModelManager:
     def __init__(self, 
                  plug_dataset,
                  model,
+                 device,
                  model_kwargs = {},
                  mode = "Training",
-                 verbose = False):
+                 verbose = False,
+                 ):
         #use_signature = False,
         #res_out = False,        
         #checkpoints_path,
@@ -285,6 +287,7 @@ class ModelManager:
         #self.plug_dataset
         self.model = model
         self.model_kwargs = model_kwargs
+        self.device = device
         self.mode = mode
         self.verbose = verbose
 
@@ -302,13 +305,13 @@ class ModelManager:
 
         
         
-        self.model = self.get_model_class()
+        self.model = self.get_model().to(self.device)
         
         
         print("Model preparation done!")
 
             
-    def get_model_class(self):
+    def get_model(self):
         if isinstance( self.model, nn.Module):
             print("Already a Pytorch model")
             model = self.model        
@@ -333,18 +336,18 @@ class ModelManager:
         if self.model_type not in self.list_model_type:
             raise ValueError(f"{self.model_type} is not in the list of PlugModel")
 
-    def get_model(self):
-        """
-        Configure and return a model to Plug.
-        :return:
-        """
-
-        self.check_model_exists()
-        print(f"loading {self.model_type} model")
-        if self.model_type == "DynUnet":
-            model = PlugDynUNet(model_kwargs=self.model_kwargs, res_out=self.res_out)
-
-        return model    
+    # def get_model(self):
+    #     """
+    #     Configure and return a model to Plug.
+    #     :return:
+    #     """
+    #
+    #     self.check_model_exists()
+    #     print(f"loading {self.model_type} model")
+    #     if self.model_type == "DynUnet":
+    #         model = PlugDynUNet(model_kwargs=self.model_kwargs, res_out=self.res_out).to(self.device)
+    #
+    #     return model
 
     
 class ExecutionManager:

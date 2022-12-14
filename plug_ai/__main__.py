@@ -51,9 +51,11 @@ def main(kwargs):
     # Model_manager contains the model. adapted to the dataset signature if user asked for it
     model_manager = plug_ai.managers.ModelManager(plug_dataset = dataset_manager, # à dégager
                                                   model = kwargs["model"],
+                                                  device=kwargs["device"],
                                                   model_kwargs = kwargs["model_kwargs"],
                                                   mode = kwargs["mode"],
-                                                  verbose = kwargs["verbose"])
+                                                  verbose = kwargs["verbose"]
+                                                  )
     #                                              use_signature = kwargs["use_signature"], # a bouger dans model_kwargs
     #                                              checkpoints_path = kwargs["checkpoints_path"],
     #                                              res_out = kwargs["res_out"],
