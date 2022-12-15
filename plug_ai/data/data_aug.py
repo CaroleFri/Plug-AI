@@ -1,7 +1,7 @@
 from monai.transforms import Compose, EnsureChannelFirstd, LoadImaged, SpatialCropd, ConcatItemsd
 
 
-class transforms_BraTS:
+class transforms_base:
     def __init__(self, keys):
 
         self.train = Compose([
@@ -26,7 +26,6 @@ class transforms_BraTS:
 
 
 available_transforms = {
-    'BraTS_transform' : transforms_BraTS,
-    'BraTS_transform_infer' : transforms_BraTS
+    'BraTS_transform': transforms_base,
+    'DecathlonT1_transform': transforms_base
 }
-

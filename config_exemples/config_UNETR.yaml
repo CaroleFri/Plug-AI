@@ -8,11 +8,11 @@
 ##################################################################################################
 # We must define precisely which arguments must be "mandatory" and are related to our general pipeline and which are related
 # to the dataset class specificaly
-dataset: BraTS
+dataset: DecathlonT1
 dataset_kwargs:
-    dataset_dir: /gpfswork/rech/ibu/commun/BraTS2021/BraTS2021_Training_Data/ # Absolute path to the dataset root dir
+    dataset_dir: /gpfswork/rech/ibu/commun/Task01_BrainTumour/ # Absolute path to the dataset root dir
     download_dataset: false
-    transformation: BraTS_transform
+    transformation: DecathlonT1_transform
 preprocess: false
 preprocess_kwargs:
 #We will have to define the structure of the dataset according to each task and do some auto-selection of models accordingly
