@@ -9,6 +9,11 @@ from ..optim import supported_optimizer
 import json
 from typing import Callable
 
+import requests
+import gdown
+  
+
+
 def print_verbose(*args, print_lvl, verbose_lvl):
     lvls = ["RESTRICTED", "FULL"]
     if verbose_lvl is not None:
@@ -219,3 +224,40 @@ def arg2step(input):
         raise ValueError('Expected a train step: : a callable or a string in the valid list of step or None(default train step).')
     return step
 
+
+def download_file_from_google_drive(id, destination):
+    URL = "https://docs.google.com/uc?export=download"
+
+    session = requests.Session()
+
+    response = session.get(URL, params = { 'id' : id , 'confirm': 1 }, stream = True)
+    token = get_confirm_token(response)
+
+    if token:
+        params = { 'id' : id, 'confirm' : token }
+        response = session.get(URL, params = params, stream = True)
+
+    save_response_content(response, destination)    
+
+def get_confirm_token(response):
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            return value
+
+    return None
+
+def save_response_content(response, destination):
+    CHUNK_SIZE = 32768
+
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk: # filter out keep-alive new chunks
+                f.write(chunk)
+
+                
+def gdrive_url2id(url):
+    prefix = "https://drive.google.com/file/d/"
+    suffix = "/view?usp=share_link"
+    id = url.removeprefix(prefix).removesuffix(suffix)
+    return id
+    

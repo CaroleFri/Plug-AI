@@ -181,6 +181,7 @@ def parse_config(parents=[]):
     # If user gave a config file, update config with config file
     config_file = dict()
     if cli_config["config_file"] is not None :
+        print(os.path.abspath(cli_config["config_file"]))
         config_file = yaml2config(cli_config["config_file"])
         check_parse_config(config = config_file, source = "Config file") # Only check
         # Add a check for config file in config file? Allow for config file cascade?

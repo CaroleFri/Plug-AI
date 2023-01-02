@@ -1,7 +1,8 @@
 from .trainer import Default_Trainer
 from .inference import *
 from .evaluation import *
- 
+from .nnUNet import nnUNet_Trainer
+
 '''    
 supported_modes = {
     'Training': Trainer,
@@ -12,7 +13,8 @@ supported_modes = {
 
 # Should we split train, infer, eval loops in different lists?
 supported_loop = {
-    'Default_train' : Default_Trainer
+    'Default_train' : Default_Trainer,
+    'nnU-Net': nnUNet_Trainer
 }
 
 # Should we split train, infer, eval steps in different lists?

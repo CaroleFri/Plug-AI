@@ -18,7 +18,6 @@ from ..models import supported_models
 #from ..runners import supported_modes
 import json
 
-
 verbose_decorator_0 = '{:=^100}'
 
 
@@ -118,80 +117,83 @@ class DatasetManager:
                           verbose_lvl = self.verbose)
             # self.dataset_dir = run_preprocessing() #save preprocessed data in a new dir
         
-        plug_ai_dataset = self.get_dataset_class()    
-        self.dataset = plug_ai_dataset.dataset 
-        
-        # Dataset splitting : maybe put everything in a function and allow for multiple strategies
-        if self.limit_sample is not None:
-            dataset_size = self.limit_sample
-        else:
-            dataset_size = len(self.dataset)            
-        self.dataset = self.dataset[:dataset_size]
-        print_verbose("Using ", len(self.dataset), "elements of the full Dataset.",
-                      print_lvl = "FULL", 
-                      verbose_lvl = self.verbose)
-        
+        plug_ai_dataset = self.get_dataset_class()
+        print(self.dataset)
+        if self.dataset != "nnU-Net":
+            print("GOT HEEEERE")
+            self.dataset = plug_ai_dataset.dataset 
 
-        if self.mode == "TRAINING" or self.mode == "INFERENCE" :
-            # HOW TO MANAGE TRAIN VAL TEST SPLIT? Split dataset before? Do it in modes? 
-            # First split : Dataset => Train+VAL | TEST I
-            # Second split : Train+Val => Train | Val
-            temp_size = int(self.train_ratio * dataset_size)
-            self.test_size = dataset_size - temp_size
-            self.val_size = int(temp_size * self.val_ratio)
-            self.train_size = temp_size - self.val_size
-
-
-            self.train_set, self.val_set, self.test_set = torch.utils.data.random_split(self.dataset, 
-                                                                                        [self.train_size, self.val_size, self.test_size]) 
-                                                                                        # generator=torch.Generator().manual_seed(2022)
-
-            print_verbose("Train, Val, Test sizes : ", len(self.train_set), len(self.val_set), len(self.test_set),
+            # Dataset splitting : maybe put everything in a function and allow for multiple strategies
+            if self.limit_sample is not None:
+                dataset_size = self.limit_sample
+            else:
+                dataset_size = len(self.dataset)            
+            self.dataset = self.dataset[:dataset_size]
+            print_verbose("Using ", len(self.dataset), "elements of the full Dataset.",
                           print_lvl = "FULL", 
-                          verbose_lvl = self.verbose)        
-
-
-            # Should we split dataset here from a full dataset? 
-            # Should our datasetclass have methods to return train/val/test sets? I believe they should just return and full dataset and we allow here for various spliting strategies. Fow now simple :train, val, test
-            
-            self.train_loader = DataLoader(self.train_set,
-                                          batch_size=self.batch_size,
-                                          shuffle=self.shuffle,
-                                          drop_last=self.drop_last)
-            
-            self.val_loader = DataLoader(self.val_set,
-                              batch_size=1, # 1 for less memory (in particular if memory isn't freed) but slower, or back to self.batch_size
-                              shuffle=False, #Shuffle not important for val
-                              drop_last=False) #Validate on all data
-
-            self.test_loader = DataLoader(self.test_set,
-                              batch_size=self.batch_size, # Eventually fix to 1 for less memory (in particular if memory isn't freed) but slower,
-                              shuffle=False, #Shuffle not important for test
-                              drop_last=False) #Test on all data
-
-        elif self.mode  == "INFERENCE":
-            self.infer_set = self.dataset
-            self.infer_loader = DataLoader(self.infer_set,
-                              batch_size=self.batch_size,
-                              shuffle=False, #Shuffle not important for inference
-                              drop_last=False) #Infer on all data
-        
-
-        ''' GENERATE SIGNATURE : maybe let it a dataset manager arg. Motivation : we can more easily define a self.signature attribute that is passed to the following managers
-        #class_args.add_argument("--generate_signature", type=arg2bool, help="A boolean that indicates if nnUnet fingerprint should be determined.")
-        #generate_signature = True,
-        # maybe make this parameter dataset specific with an nnUnet_dataset_class
-        
-        if self.generate_signature:
-            print_verbose("Generating signature",
-                          print_lvl = "RESTRICTED", 
                           verbose_lvl = self.verbose)
-            self.signature = None #WIP signature on full dataset? on train_set? 
-        '''
-        
+
+
+            if self.mode == "TRAINING" or self.mode == "INFERENCE" :
+                # HOW TO MANAGE TRAIN VAL TEST SPLIT? Split dataset before? Do it in modes? 
+                # First split : Dataset => Train+VAL | TEST I
+                # Second split : Train+Val => Train | Val
+                temp_size = int(self.train_ratio * dataset_size)
+                self.test_size = dataset_size - temp_size
+                self.val_size = int(temp_size * self.val_ratio)
+                self.train_size = temp_size - self.val_size
+
+
+                self.train_set, self.val_set, self.test_set = torch.utils.data.random_split(self.dataset, 
+                                                                                            [self.train_size, self.val_size, self.test_size]) 
+                                                                                            # generator=torch.Generator().manual_seed(2022)
+
+                print_verbose("Train, Val, Test sizes : ", len(self.train_set), len(self.val_set), len(self.test_set),
+                              print_lvl = "FULL", 
+                              verbose_lvl = self.verbose)        
+
+
+                # Should we split dataset here from a full dataset? 
+                # Should our datasetclass have methods to return train/val/test sets? I believe they should just return and full dataset and we allow here for various spliting strategies. Fow now simple :train, val, test
+
+                self.train_loader = DataLoader(self.train_set,
+                                              batch_size=self.batch_size,
+                                              shuffle=self.shuffle,
+                                              drop_last=self.drop_last)
+
+                self.val_loader = DataLoader(self.val_set,
+                                  batch_size=1, # 1 for less memory (in particular if memory isn't freed) but slower, or back to self.batch_size
+                                  shuffle=False, #Shuffle not important for val
+                                  drop_last=False) #Validate on all data
+
+                self.test_loader = DataLoader(self.test_set,
+                                  batch_size=self.batch_size, # Eventually fix to 1 for less memory (in particular if memory isn't freed) but slower,
+                                  shuffle=False, #Shuffle not important for test
+                                  drop_last=False) #Test on all data
+
+            elif self.mode  == "INFERENCE":
+                self.infer_set = self.dataset
+                self.infer_loader = DataLoader(self.infer_set,
+                                  batch_size=self.batch_size,
+                                  shuffle=False, #Shuffle not important for inference
+                                  drop_last=False) #Infer on all data
+
+
+            ''' GENERATE SIGNATURE : maybe let it a dataset manager arg. Motivation : we can more easily define a self.signature attribute that is passed to the following managers
+            #class_args.add_argument("--generate_signature", type=arg2bool, help="A boolean that indicates if nnUnet fingerprint should be determined.")
+            #generate_signature = True,
+            # maybe make this parameter dataset specific with an nnUnet_dataset_class
+
+            if self.generate_signature:
+                print_verbose("Generating signature",
+                              print_lvl = "RESTRICTED", 
+                              verbose_lvl = self.verbose)
+                self.signature = None #WIP signature on full dataset? on train_set? 
+            '''
+
         
         if self.verbose == "Full" :
-            print("Dataset loaded !")
+            print("Dataset prepared !")
             
     
     def get_dataset_class(self):
@@ -306,9 +308,11 @@ class ModelManager:
 
         
         
-        self.model = self.get_model().to(self.device)
-        
-        
+        if self.model == "nnU-Net":
+            self.model = self.get_model()
+        else:
+            self.model = self.get_model().to(self.device)
+            
         print("Model preparation done!")
 
             
@@ -416,26 +420,34 @@ class ExecutionManager:
         if self.mode == "TRAINING":
             #things to do around the train loop, will be different from eval or infer (ex: no need of optimizer...)
             print("TRAINING MODE : ")
-            
-            #Put everything in a dict then filter 
-            # WIP: define what to put in
-            # WARNING : Do not rewrite given loop_kwargs values (for example if a verbose is given already for the loop) 
-            self.loop_kwargs["train_loader"] = self.dataset_manager.train_loader
-            self.loop_kwargs["model"] = self.model_manager.model
-            self.loop_kwargs["optimizer"] = self.optimizer
-            self.loop_kwargs["criterion"] = self.criterion
-            self.loop_kwargs["optimizer_kwargs"] = self.optimizer_kwargs
-            self.loop_kwargs["criterion_kwargs"] = self.criterion_kwargs
-            self.loop_kwargs["nb_epoch"] = self.nb_epoch
-            self.loop_kwargs["device"] = self.device
-            self.loop_kwargs["verbose"] = self.verbose
-            #self.loop_kwargs["train_step"] = self.train_step
-            # train_step selector not here yet
-            
-            
-            loop_kwargs_filtered = filter_dict(self.loop, self.loop_kwargs)
-            print(loop_kwargs_filtered.keys())
-            self.model = self.loop(**loop_kwargs_filtered).model
+            # WIP: homogenize what/how each loop should return and avoid the following if/else
+            if True:
+                self.loop_kwargs["device"] = self.device
+                self.loop_kwargs["verbose"] = self.verbose
+                loop_kwargs_filtered = filter_dict(self.loop, self.loop_kwargs)
+                print(loop_kwargs_filtered.keys())
+                self.model = self.loop(**loop_kwargs_filtered)
+                
+            else:
+                #Put everything in a dict then filter 
+                # WIP: define what to put in
+                # WARNING : Do not rewrite given loop_kwargs values (for example if a verbose is given already for the loop) 
+                self.loop_kwargs["train_loader"] = self.dataset_manager.train_loader
+                self.loop_kwargs["model"] = self.model_manager.model
+                self.loop_kwargs["optimizer"] = self.optimizer
+                self.loop_kwargs["criterion"] = self.criterion
+                self.loop_kwargs["optimizer_kwargs"] = self.optimizer_kwargs
+                self.loop_kwargs["criterion_kwargs"] = self.criterion_kwargs
+                self.loop_kwargs["nb_epoch"] = self.nb_epoch
+                self.loop_kwargs["device"] = self.device
+                self.loop_kwargs["verbose"] = self.verbose
+                #self.loop_kwargs["train_step"] = self.train_step
+                # train_step selector not here yet
+
+
+                loop_kwargs_filtered = filter_dict(self.loop, self.loop_kwargs)
+                print(loop_kwargs_filtered.keys())
+                self.model = self.loop(**loop_kwargs_filtered).model
             
             #torch.save(self.model.state_dict(), os.path.join(config['checkpoints_path'], f'{config["model_name"]}.pt'))
             

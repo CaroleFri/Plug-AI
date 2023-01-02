@@ -47,7 +47,6 @@ def main(kwargs):
     
     #generate_signature = kwargs["generate_signature"], # à potentiellement déplacer soit dans dataset_kwargs (dataset method) ou laisser gérer par manager
     
-    
     # Model_manager contains the model. adapted to the dataset signature if user asked for it
     model_manager = plug_ai.managers.ModelManager(plug_dataset = dataset_manager, # à dégager
                                                   model = kwargs["model"],
@@ -59,6 +58,7 @@ def main(kwargs):
     #                                              use_signature = kwargs["use_signature"], # a bouger dans model_kwargs
     #                                              checkpoints_path = kwargs["checkpoints_path"],
     #                                              res_out = kwargs["res_out"],
+
 
     # Execution_manager runs a training/evaluation/inference process. 
     # Some parameters such as batch_size="auto" will run first a finding params loop.
@@ -78,7 +78,6 @@ def main(kwargs):
                                                           optimizer_kwargs = kwargs["optimizer_kwargs"],
                                                           verbose = kwargs["verbose"])
 
-    
     # TODO, remove config export from parser and put it in execution_manager
     
     print(">>> Complete execution in: " + str(datetime.now() - start))    
