@@ -1,7 +1,7 @@
 import os
 import shutil
 import requests
-import gdown        
+#import gdown        
 import subprocess
 from monai.apps.utils import download_and_extract, download_url
   

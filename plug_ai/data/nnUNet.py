@@ -1,7 +1,7 @@
 import os
 import shutil
 import requests
-import gdown        
+#import gdown        
 import subprocess
 from monai.apps.utils import download_and_extract, download_url
   
@@ -56,6 +56,8 @@ class nnUNet_dataset:
         if isinstance(self.raw_dataset_type, str):
             if self.raw_dataset_type not in self.valid_dataset_types.keys():
                 raise ValueError('''Expected dataset_type to be either "MSD", "3D_TIFF", "2D_PNG", "2D_TIFF"''')
+            else:
+                print("nnunet dataset type checked")
         else:
             raise TypeError('''Expected dataset_type to be a string either "MSD", "3D_TIFF", "2D_PNG", "2D_TIFF"''')  
             
@@ -65,10 +67,10 @@ class nnUNet_dataset:
             "nnUNet_raw_data_base" : self.nnunet_dataset_rootdir,
         }
 
-        for env_var_name in self.nnunet_dataset_env_vars:
+        for env_var_name in self.nnunet_dataset_env_vars: # Why a loop ??
             os.environ[env_var_name] = self.nnunet_dataset_env_vars[env_var_name]         
             os.makedirs(self.nnunet_dataset_env_vars[env_var_name], exist_ok = True)
-
+        
             
     def get_msd_task_dataset(self):
         tasks_infos = {
@@ -146,7 +148,7 @@ class nnUNet_dataset:
             "url" : "https://drive.google.com/file/d/18dLVTJtkp052danMjzlirAgIsklT_Aem/view?usp=share_link"
         }
         license_path = os.path.join(self.raw_dataset_dir,license_infos["name"])
-        download_file_from_google_drive(gdrive_url2id(license_infos["url"]), license_path)
+        # download_file_from_google_drive(gdrive_url2id(license_infos["url"]), license_path) # Pas défini ?
 
             
         
