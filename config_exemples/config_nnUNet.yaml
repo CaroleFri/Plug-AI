@@ -10,13 +10,13 @@
 # to the dataset class specificaly
 dataset: nnU-Net
 dataset_kwargs:
-    nnunet_dataset_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_0/nnUNet_raw_data_base"
-    task_id: 15
+    nnunet_dataset_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_kg/nnUNet_raw_data_base"
+    task_id: 4
     #task_name: 'Hippocampus'
     raw_dataset_type: "MSD"
-    raw_dataset_dir: "/gpfswork/rech/ibu/commun/datasets/MSD/Task15_TestTask"
+    raw_dataset_dir: "/gpfswork/rech/ibu/commun/datasets/MSD/Task04_Hippocampus"
     download_raw_dataset: False
-    nbr_thread: 8
+    nbr_thread: 4
     progress: True
 
 ##################################################################################################
@@ -25,9 +25,9 @@ dataset_kwargs:
 
 model: nnU-Net     #model_type MODEL_TYPE
 model_kwargs:     #model_args MODEL_ARGS
-    nnunet_dataset_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_0/nnUNet_raw_data_base"
-    nnunet_preprocessed_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_0/nnUNet_preprocessed"
-    task_id: 15
+    nnunet_dataset_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_kg/nnUNet_raw_data_base"
+    nnunet_preprocessed_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_kg/nnUNet_preprocessed"
+    task_id: 4
     verify_dataset_integrity: False
     no_preprocessing: False
     planner_2d: "ExperimentPlanner2D_v21"
@@ -52,12 +52,12 @@ report_log: False
 # "Default" option do not make use of any kwargs
 loop: nnU-Net
 loop_kwargs :
-    nnunet_dataset_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_0/nnUNet_raw_data_base"
-    nnunet_preprocessed_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_0/nnUNet_preprocessed"
-    nnunet_experiment_dir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_0/nnUNet_preprocessed"
+    nnunet_dataset_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_kg/nnUNet_raw_data_base"
+    nnunet_preprocessed_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_kg/nnUNet_preprocessed"
+    nnunet_experiment_dir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_kg/nnUNet_preprocessed"
     network: "2d"
     network_trainer: "nnUNetTrainerV2"
-    task: 15
+    task: 4
     fold: "all"
 #validation_only: 
 #continue_training:

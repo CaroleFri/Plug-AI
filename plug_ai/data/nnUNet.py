@@ -4,7 +4,7 @@ import requests
 import gdown        
 import subprocess
 from monai.apps.utils import download_and_extract, download_url
-  
+from ..utils.script_utils import download_file_from_google_drive, gdrive_url2id
     
     
 class nnUNet_dataset:
