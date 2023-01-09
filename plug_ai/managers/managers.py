@@ -234,7 +234,7 @@ class DatasetManager:
     def check_preprocess(self, preprocess=None, *args, **kwargs):
         if preprocess is None:
             print("No preprocessing")
-        elif preprocess in preprocess_pipelines:
+        elif preprocess in preprocess_pipelines: # Doesn't exist ??
             print("Preprocessing pipeline selected")
         elif isinstance(preprocess, callable):
             print("Preprocessing custom")
@@ -294,6 +294,7 @@ class ModelManager:
         self.mode = mode
         self.verbose = verbose
 
+        if isinstance(model, str): self.model_name = model
         # Inside Manager check and parse of arguments reusing the same parser
         # We can remove completely the parsing and only do the check in the config generation
         self.__dict__  = check_parse_config(self.__dict__, source="Model_Manager")
@@ -305,7 +306,6 @@ class ModelManager:
         print_verbose("Running with interpreted config:\n\t", self.__dict__, 
                       print_lvl = "FULL", 
                       verbose_lvl = self.verbose)
-
         
         
         if self.model == "nnU-Net":
@@ -421,7 +421,7 @@ class ExecutionManager:
             #things to do around the train loop, will be different from eval or infer (ex: no need of optimizer...)
             print("TRAINING MODE : ")
             # WIP: homogenize what/how each loop should return and avoid the following if/else
-            if True:
+            if self.model_manager.model_name == "nnU-Net":
                 self.loop_kwargs["device"] = self.device
                 self.loop_kwargs["verbose"] = self.verbose
                 loop_kwargs_filtered = filter_dict(self.loop, self.loop_kwargs)

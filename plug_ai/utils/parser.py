@@ -101,6 +101,7 @@ def check_parse_config(config = {}, source="CLI"):
                    "drop_last" : arg2bool,
                    
                    "model" : str,
+                   "model_name" : str,
                    "checkpoints_path" : str,
                    "model_kwargs" : arg2dict,
                    "use_signature" : arg2bool,
