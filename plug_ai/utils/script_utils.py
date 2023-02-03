@@ -4,7 +4,7 @@ import ruamel.yaml
 import torch
 import inspect
 import os
-from ..loss import supported_criterion
+from ..loss import supported_criterion, supported_metric
 from ..optim import supported_optimizer
 import json
 from typing import Callable
@@ -175,6 +175,22 @@ def arg2criterion(input):
         else:
             raise ValueError('Expected criterion to be : a torch criterion, a string in the valid list of criterion or None(default criterion).')
     return criterion
+
+
+def arg2metric(input):
+    if isinstance(input, Callable):
+        metric = input
+    elif input is None:
+        metric = supported_metric["Default"]
+    elif isinstance(input, str):
+        if input in supported_metric:
+                if input == "Default":
+                    metric = supported_metric["Default"]
+                else:
+                    metric = supported_metric[input]
+        else:
+            raise ValueError('Expected metric to be : a torch metric, a string in the valid list of metric or None(default metric).')
+    return metric
 
 
 def arg2optimizer(input):

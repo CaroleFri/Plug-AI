@@ -74,6 +74,8 @@ def main(kwargs):
                                                           report_log = kwargs["report_log"],
                                                           criterion = kwargs["criterion"], # txt | callable | instance herite loss pytorch
                                                           criterion_kwargs = kwargs["criterion_kwargs"], 
+                                                          metric = kwargs["metric"],
+                                                          metric_kwargs = kwargs["metric_kwargs"],
                                                           optimizer = kwargs["optimizer"], # txt | callable
                                                           optimizer_kwargs = kwargs["optimizer_kwargs"],
                                                           verbose = kwargs["verbose"])

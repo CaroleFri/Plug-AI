@@ -94,7 +94,7 @@ def check_parse_config(config = {}, source="CLI"):
                    "preprocess_kwargs" : arg2dict,
                    "generate_signature" : arg2bool, 
                    "batch_size" : int,
-                   "train_ratio" : float,
+                   "train_ratio" : float, # WIP to clean, passage une seul liste
                    "val_ratio" : float, #Will need checkers for ratios
                    "limit_sample" : int,
                    "shuffle" : arg2bool,
@@ -115,6 +115,8 @@ def check_parse_config(config = {}, source="CLI"):
                    "report_log" : arg2bool,
                    "criterion" : arg2criterion,
                    "criterion_kwargs" : arg2dict,
+                   "metric" : arg2metric,
+                   "metric_kwargs" : arg2dict,
                    "optimizer" : arg2optimizer,
                    "optimizer_kwargs" : arg2dict,
                    "execution_kwargs" : arg2dict, 

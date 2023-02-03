@@ -162,7 +162,7 @@ class DatasetManager:
                                               drop_last=self.drop_last)
 
                 self.val_loader = DataLoader(self.val_set,
-                                  batch_size=1, # 1 for less memory (in particular if memory isn't freed) but slower, or back to self.batch_size
+                                  batch_size=self.batch_size, # 1 for less memory (in particular if memory isn't freed) but slower, or back to self.batch_size
                                   shuffle=False, #Shuffle not important for val
                                   drop_last=False) #Validate on all data
 
@@ -359,6 +359,8 @@ class ExecutionManager:
         class_args.add_argument("--report_log", type=arg2bool) # why str ?
         class_args.add_argument("--criterion", type=str) # why str ?
         class_args.add_argument("--criterion_kwargs", type=dict)
+        class_args.add_argument("--metric", type=str)
+        class_args.add_argument("--metric_kwargs", type=dict)
         class_args.add_argument("--optimizer", type=str)
         class_args.add_argument("--optimizer_kwargs", type=dict)
         class_args.add_argument("--verbose", type=str)
@@ -380,7 +382,9 @@ class ExecutionManager:
                  seed = 2022,
                  report_log = False,
                  criterion = None,
+                 metric = None,
                  criterion_kwargs = {},
+                 metric_kwargs = {},
                  optimizer = None,
                  optimizer_kwargs = {},
                  verbose = "FULL"
@@ -396,7 +400,9 @@ class ExecutionManager:
         self.seed = seed
         self.report_log = report_log
         self.criterion = criterion
+        self.metric = metric
         self.criterion_kwargs = criterion_kwargs
+        self.metric_kwargs = metric_kwargs
         self.optimizer = optimizer
         self.optimizer_kwargs = optimizer_kwargs
         self.verbose = verbose
@@ -433,11 +439,14 @@ class ExecutionManager:
                 # WIP: define what to put in
                 # WARNING : Do not rewrite given loop_kwargs values (for example if a verbose is given already for the loop) 
                 self.loop_kwargs["train_loader"] = self.dataset_manager.train_loader
+                self.loop_kwargs["val_loader"] = self.dataset_manager.val_loader
                 self.loop_kwargs["model"] = self.model_manager.model
                 self.loop_kwargs["optimizer"] = self.optimizer
                 self.loop_kwargs["criterion"] = self.criterion
+                self.loop_kwargs["metric"] = self.metric
                 self.loop_kwargs["optimizer_kwargs"] = self.optimizer_kwargs
                 self.loop_kwargs["criterion_kwargs"] = self.criterion_kwargs
+                self.loop_kwargs["metric_kwargs"] = self.metric_kwargs
                 self.loop_kwargs["nb_epoch"] = self.nb_epoch
                 self.loop_kwargs["device"] = self.device
                 self.loop_kwargs["verbose"] = self.verbose
