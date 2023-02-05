@@ -58,11 +58,13 @@ optimizer_kwargs:
     momentum: 0.99
     weight_decay: 3e-5
     nesterov: True
+lr_scheduler: LambdaLR
+lr_scheduler_kwargs:
 
 # You can choose between "Default", or a criterion in the list of valid criterions.
 # Complete criterion_kwargs according to the args needed for the criterion you selected
 # "Default" option do not make use of any kwargs
-criterion: DiceCELoss
+criterion: Default
 criterion_kwargs:
     to_onehot_y: True
     softmax: True

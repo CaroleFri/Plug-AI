@@ -58,7 +58,7 @@ def main(kwargs):
     #                                              checkpoints_path = kwargs["checkpoints_path"],
     #                                              res_out = kwargs["res_out"],
 
-
+    '''
     # Execution_manager runs a training/evaluation/inference process. 
     # Some parameters such as batch_size="auto" will run first a finding params loop.
     execution_manager = plug_ai.managers.ExecutionManager(dataset_manager = dataset_manager, 
@@ -77,7 +77,7 @@ def main(kwargs):
                                                           optimizer_kwargs = kwargs["optimizer_kwargs"],
                                                           verbose = kwargs["verbose"])
     # TODO, remove config export from parser and put it in execution_manager
-    
+    '''
     print(">>> Complete execution in: " + str(datetime.now() - start))    
     
  

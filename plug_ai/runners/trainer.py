@@ -6,9 +6,11 @@ class Default_Trainer:
                  train_loader,
                  model,
                  optimizer,
-                 criterion,                 
+                 criterion,
+                 lr_scheduler,
                  optimizer_kwargs = {},
                  criterion_kwargs = {},
+                 lr_scheduler_kwargs = {},
                  nb_epoch=2,
                  device="cuda",
                  train_step = "default",
@@ -41,6 +43,8 @@ class Default_Trainer:
 
         optimizer_kwargs_filtered = filter_dict(optimizer, optimizer_kwargs)
         self.optimizer = optimizer(self.model.parameters(), **optimizer_kwargs_filtered)
+        
+        
         
         print_verbose("Criterion is :", self.criterion, 
                       print_lvl = "RESTRICTED", 
