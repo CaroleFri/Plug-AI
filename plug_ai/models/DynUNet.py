@@ -78,7 +78,7 @@ class PlugDynUNet(nn.Module):
         out = self.base(inp)
 
         # for now res_out is always false
-        if not self.res_out:
+        if not self.res_out and self.training:
             out = torch.unbind(out, dim=1)
             out = out[0]
 

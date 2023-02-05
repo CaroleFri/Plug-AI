@@ -6,3 +6,4 @@ tests/plug_ai.slurm
 library_tests.ipynb
 stderr.txt
 stdout.txt
+**.vscode

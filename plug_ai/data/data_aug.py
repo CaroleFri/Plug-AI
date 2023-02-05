@@ -1,8 +1,8 @@
-from monai.transforms import Compose, EnsureChannelFirstd, LoadImaged, SpatialCropd, ConcatItemsd
+from monai.transforms import Compose, EnsureChannelFirstd, LoadImaged, SpatialCropd, ConcatItemsd, AsDiscreted
 
 
 class transforms_base:
-    def __init__(self, keys):
+    def __init__(self, keys, nb_class=5):
 
         self.train = Compose([
             LoadImaged(keys=keys),
@@ -11,7 +11,8 @@ class transforms_base:
             SpatialCropd(keys=['input', 'label'], # crop it to make easily usable for etape 1
                          roi_size=[128, 128, 128],
                          roi_center=[0, 0, 0]
-                         )
+                         ),
+            AsDiscreted(keys=['label'], to_onehot=nb_class)
         ])
 
         self.infer = Compose([

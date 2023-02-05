@@ -17,8 +17,8 @@ preprocess: false
 preprocess_kwargs:
 #We will have to define the structure of the dataset according to each task and do some auto-selection of models accordingly
 generate_signature: true
-train_ratio: 0.8 #How to specify the split? Train ratio => Dataset => train+val (train_ratio) | test (1 - train_ratio)
-val_ratio: 0 #A subfraction of the train set to use for validation (train_ratio * val_ratio = val_real_ratio)
+train_ratio: 1 #How to specify the split? Train ratio => Dataset => train+val (train_ratio) | test (1 - train_ratio)
+val_ratio: 0.2 #A subfraction of the train set to use for validation (train_ratio * val_ratio = val_real_ratio)
 limit_sample: 20
 batch_size: 2
 shuffle: true
@@ -33,7 +33,7 @@ model: unetr     #model_type MODEL_TYPE
 model_kwargs:     #model_args MODEL_ARGS
     checkpoint_path: ./model_checkpoint
     in_channels: 4
-    out_channels: 5
+    out_channels: 4
     img_size: [128,128,128]
 
 ##################################################################################################
@@ -65,9 +65,11 @@ optimizer_kwargs:
 # "Default" option do not make use of any kwargs
 criterion: DiceCELoss
 criterion_kwargs:
-    to_onehot_y: True
+    to_onehot_y: False
     softmax: True
-
+metric: MeanIoU
+# We have to put it or error !!!!!
+metric_kwargs:
 
 # Execution settings
 

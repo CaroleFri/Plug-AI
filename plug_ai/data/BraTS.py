@@ -9,11 +9,12 @@ class BraTS:
     # Idea : add a createParser that manager retrieve to complete his own parser
     #def createParser(cls):
     
-    def __init__(self, dataset_dir, download_dataset=False, transformation=None, mode="TRAINING"):
+    def __init__(self, dataset_dir, download_dataset=False, transformation=None, mode="TRAINING", nb_class=5):
         self.dataset_dir = dataset_dir
         self.download_dataset = download_dataset
         self.transformation = transformation
         self.mode = mode
+        self.nb_class = nb_class
         
         if self.download_dataset:
             self.download()
@@ -71,8 +72,10 @@ class BraTS:
         elif transformation in available_transforms:
             # Must correct .train/.infer to make it generic to any transformation/args, or accept not full compatibility between dataset/transform
             # I believe transform should be compatible if a pattern is respected, here keys could be well-defined...
+
+            # Can't give paramters to transformation = not good HB
             if mode in ["TRAINING","EVALUATION"]:
-                transform = available_transforms[transformation](keys).train
+                transform = available_transforms[transformation](keys, nb_class=self.nb_class).train
             else:
                 transform = available_transforms[transformation](keys).infer
         else:
