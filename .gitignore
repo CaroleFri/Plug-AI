@@ -8,3 +8,5 @@ stderr.txt
 stdout.txt
 **.vscode
 plug_ai.egg-info/
+docs/build/
+
