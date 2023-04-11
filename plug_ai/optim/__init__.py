@@ -22,11 +22,10 @@ supported_optimizer = {
 
 
 
-supported_lr_scheduler = {
+supported_lr_scheduler_old = {
+    None : None,
     'None' : None,
-    'Default' : LambdaLR,
-    'LambdaLR' : LambdaLR,
-    'MultiplicativeLR' : MultiplicativeLR,
+    'Default' : None,
     'StepLR' : StepLR,
     'MultiStepLR' : MultiStepLR,
     'ConstantLR' : ConstantLR,
@@ -38,7 +37,31 @@ supported_lr_scheduler = {
     'OneCycleLR' : OneCycleLR,
     'CosineAnnealingWarmRestarts' : CosineAnnealingWarmRestarts
 }
+
+supported_lr_scheduler = {
+    None : {'scheduler':None, 'scheduler_update':None},
+    'None' : {'scheduler':None, 'scheduler_update':None},
+    'Default' : {'scheduler':None, 'scheduler_update':None},
+    'StepLR' : {'scheduler':StepLR, 'scheduler_update':"epoch"},
+    'MultiStepLR' : {'scheduler':MultiStepLR, 'scheduler_update':"epoch"},
+    'ConstantLR' : {'scheduler':ConstantLR, 'scheduler_update':"epoch"},
+    'LinearLR' : {'scheduler':LinearLR, 'scheduler_update':"epoch"},
+    'ExponentialLR' : {'scheduler':ExponentialLR, 'scheduler_update':"epoch"},
+    'CosineAnnealingLR' : {'scheduler':CosineAnnealingLR, 'scheduler_update':"epoch"},
+    'ReduceLROnPlateau' : {'scheduler':ReduceLROnPlateau, 'scheduler_update':"epoch"},
+    'CyclicLR' : {'scheduler':CyclicLR, 'scheduler_update':"batch"},
+    'OneCycleLR' : {'scheduler':OneCycleLR, 'scheduler_update':"batch"},
+    'CosineAnnealingWarmRestarts' : {'scheduler':CosineAnnealingWarmRestarts, 'scheduler_update':"epoch"},
+}
+# In order to add a scheduler : add an item to the suppoter_lr_scheduler.
+# Item structure : {'scheduler':callable that instantiate the scheduler, 'scheduler_update': where the scheduler.step() is supposed to be positionned (for now only epoch/batch options)}
+# To add another position, trainer must be adapted.
+# Some LR_schedulers expects a specific parameter in steps. For example ReduceLROnPlateau needs a "metrics". In the trainer, put every 
+
 ## WIP 
 # lr_scheduler.ChainedScheduler => nested dictionnaries to give multive schedulers in a chain?
 # lr_scheduler.SequentialLR => same as ChainedScheduler
 # lr_scheduler.PolynomialLR => cannot import it, available from 1.13+
+# 'LambdaLR' : LambdaLR => how to allow for a lambda given by config file? Dev only compatibility?
+# 'MultiplicativeLR' : MultiplicativeLR, #Function expects a lambda, risky injection from config file. Dev only compatibility?
+

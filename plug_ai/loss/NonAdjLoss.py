@@ -1,7 +1,7 @@
 import torch
 
 
-class AdjacencyEstimator(torch.nn.Module):
+class NonAdjLoss(torch.nn.Module):
     """Estimates the adjacency graph of labels based on probability maps.
     Parameters
     ----------
@@ -9,7 +9,7 @@ class AdjacencyEstimator(torch.nn.Module):
         number of structures segmented.
     """
     def __init__(self, nb_labels):
-        super(AdjacencyEstimator, self).__init__()
+        super(NonAdjLoss, self).__init__()
 
         # constant 2D convolution, needs constant weights and no gradient
         # apply the same convolution filter to all labels
@@ -30,8 +30,11 @@ class AdjacencyEstimator(torch.nn.Module):
         self._conv_layer = layer
         # replicate padding to recover the same resolution after convolution
         self._pad_layer = torch.nn.ZeroPad2d(1)
+        
+        
+        
 
-    def forward(self, image):
+    def forward(self, image, args):
         # padding of tensor of size batch x k x W x H
         p_tild = self._pad_layer(image)
         # apply constant convolution and normalize by size of kernel
@@ -49,7 +52,11 @@ class AdjacencyEstimator(torch.nn.Module):
         #     graph[:, i] = (image * p_tild_i).sum(0).sum(1).sum(1)
 
         # torch v1.0 einstein notation replaces following loop
-        return torch.einsum('nihw,njhw->ij', image, p_tild) / norm_factor
+        nonadjloss = torch.einsum('nihw,njhw->ij', image, p_tild) / norm_factor
+        nb_conn_ab_max = 10000 # WIP: This value should depend on graph_gt. ISSUE: CANNOT RETRIEVE GRAPH_GT. No graph.csv file found
+        lambda_coef = 1 # WIP : let to 1 for now, we can add an update method to the loss for this factor to reproduce lambda control
+        nonadjloss = (nonadjloss.sum() / nb_conn_ab_max) * lambda_coef
+        return nonadjloss
 
 
 class LambdaControl:
@@ -139,3 +146,5 @@ class LambdaControl:
         if self.lambda_factor < 1 or self.train_nan_count >= 3:
             print('--Too many errors, training is ending!')
             return
+            
+

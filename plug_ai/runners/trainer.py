@@ -7,10 +7,12 @@ class Default_Trainer:
                  train_loader,
                  model,
                  optimizer,
-                 criterion,    
+                 criterion,
                  val_loader = None,  
-                 metric = None,       
+                 metric = None,
+                 lr_scheduler = None,
                  optimizer_kwargs = {},
+                 lr_scheduler_kwargs = {},
                  criterion_kwargs = {},
                  metric_kwargs = {},
                  nb_epoch=2,
@@ -26,8 +28,8 @@ class Default_Trainer:
         print("Training ...")
         self.train_loader = train_loader
         self.val_loader = val_loader
-        self.metric = metric
         self.model = model
+        self.metric = metric
         self.nb_epoch = nb_epoch
         self.device = device
 
@@ -46,13 +48,22 @@ class Default_Trainer:
         # Instantiation done here but I believe it is more "standard" that the train loop receives both model, criterion and optimizer initialized for the situation B where a dev gives his own loop
         # but for a situation like criterion being a callable that returns multiple criterions to be used in the train loop, if reading was done in training loop, would be no problem with this special case.
         criterion_kwargs_filtered = filter_dict(criterion, criterion_kwargs)
-        self.criterion = criterion(**criterion_kwargs_filtered)
-
-        metric_kwargs_filtered = filter_dict(metric, metric_kwargs) # WIP
-        self.metric = metric(metric_kwargs_filtered)
+        self.criterion = criterion(**criterion_kwargs_filtered).train().cuda()
+        
+        if self.metric != None:
+            metric_kwargs_filtered = filter_dict(metric, metric_kwargs) # WIP
+            self.metric = metric(metric_kwargs_filtered)
 
         optimizer_kwargs_filtered = filter_dict(optimizer, optimizer_kwargs)
         self.optimizer = optimizer(self.model.parameters(), **optimizer_kwargs_filtered)
+        
+        
+        # Setup learning rate scheduler and step time
+        self.lr_scheduler = lr_scheduler["scheduler"]
+        self.lr_scheduler_update = lr_scheduler["scheduler_update"]
+        if self.lr_scheduler is not None:
+            lr_scheduler_kwargs_filtered = filter_dict(self.lr_scheduler, lr_scheduler_kwargs)
+            self.lr_scheduler = self.lr_scheduler(self.optimizer, **lr_scheduler_kwargs_filtered)
         
         print_verbose("Criterion is :", self.criterion, 
                       print_lvl = "RESTRICTED", 
@@ -62,8 +73,10 @@ class Default_Trainer:
                       verbose_lvl = self.verbose)
         print_verbose("Optimizer is :", self.optimizer, 
                       print_lvl = "RESTRICTED", 
-                      verbose_lvl = self.verbose)        
-        
+                      verbose_lvl = self.verbose) 
+        print_verbose("Learning Rate Scheduler is :", self.lr_scheduler, 
+                      print_lvl = "RESTRICTED", 
+                      verbose_lvl = self.verbose)
         # if self.report_log:
         #     self.writer = SummaryWriter(f'./report_log/{self.model_name}')
         #     print("recording tensorboard logs")
@@ -84,16 +97,22 @@ class Default_Trainer:
             for i, sample in enumerate(self.train_loader):
                 
                 loss = self.train_step(sample)
-
+                
                 print(f'[Epoch {epoch+1}/{self.nb_epoch} |  Step_Epoch {i+1}/{total_train_step} | Loss {loss.item()}]')
 
                 if self.report_log:
                     self.writer.add_scalar('Loss/train', loss.item(), i + epoch * total_train_step)
 
             # Evaluation here 
-            if self.val_loader != None:
-                self.eval_loop(self)
-
+            if self.metric != None:
+                if self.val_loader != None:
+                    self.eval_metric = self.eval_loop(self)
+            
+            # Learning Rate Update using lr_scheduler
+            if self.lr_scheduler_update == "epoch":
+                #lr_scheduler_step_kwargs = filter_dict(self.lr_scheduler.step, {"metrics":self.eval_metric}) #Add every parameter that might be in lr_scheduler.step()
+                self.lr_scheduler.step()#lr_scheduler_step_kwargs
+            
             print(f"Epoch {epoch} finished")
 
         
@@ -110,7 +129,11 @@ class Default_Trainer:
 
         loss.backward()
         self.optimizer.step()
-
+        
+        if self.lr_scheduler_update == "batch":
+            #lr_scheduler_step_kwargs = filter_dict(self.lr_scheduler.step, {"metrics":self.eval_metric}) #Add every parameter that might be in lr_scheduler.step()
+            self.lr_scheduler.step()
+        
         return loss
 
     def inference_step(self, sample_inp):

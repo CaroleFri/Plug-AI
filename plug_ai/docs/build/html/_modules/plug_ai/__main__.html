@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>plug_ai.__main__ &#8212; Plug-AI 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Plug-AI 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plug_ai.__main__</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for plug_ai.__main__</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This serves to import plug_ai as a library.</span>
+<span class="sd">In the final version, this should not be necessary. Instead user will need to do a pip install plug_ai in order to be able to import plug_ai.</span>
+<span class="sd">Warning : there seem to be issues when importing monai and thus plug_ai without a gpu.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># Workaround until plug-ai is a package</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">path_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_file</span><span class="o">+</span><span class="s1">&#39;/..&#39;</span><span class="p">)</span>
+
+<span class="c1"># Imports</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">plug_ai</span>
+<span class="c1">#from plug_ai.models import ModelManager</span>
+<span class="c1">#from plug_ai.execution import ExecManager</span>
+<span class="c1">#from plug_ai.utils.parser import parse_config</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api_reference.html#plug_ai.__main__.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Plug-AI running with config:&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">,</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="c1"># HOW TO ADD AN AUTO BATCH_SIZE? Not possible before loading/estimating model size...</span>
+    <span class="c1"># IDEA, if arg=&quot;auto&quot; =&gt; execution manager, first do a spinup round to find params and then run real execution</span>
+    <span class="c1"># gets all params, check if any param auto, if param auto=&gt; determine param and fix it to new value</span>
+    <span class="c1">#params_manager = </span>
+
+    
+    <span class="c1"># Dataset_manager contains the dataset/dataloader, eventually the signature if user asked for it</span>
+    <span class="n">dataset_manager</span> <span class="o">=</span> <span class="n">plug_ai</span><span class="o">.</span><span class="n">managers</span><span class="o">.</span><span class="n">DatasetManager</span><span class="p">(</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">],</span>
+                                                      <span class="n">dataset_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dataset_kwargs&quot;</span><span class="p">],</span>
+                                                      <span class="n">preprocess</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">],</span>
+                                                      <span class="n">preprocess_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;preprocess_kwargs&quot;</span><span class="p">],</span>
+                                                      <span class="n">mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;mode&quot;</span><span class="p">],</span>
+                                                      <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;batch_size&quot;</span><span class="p">],</span>
+                                                      <span class="n">train_ratio</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;train_ratio&quot;</span><span class="p">],</span>
+                                                      <span class="n">val_ratio</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;val_ratio&quot;</span><span class="p">],</span>
+                                                      <span class="n">limit_sample</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;limit_sample&quot;</span><span class="p">],</span>
+                                                      <span class="n">shuffle</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;shuffle&quot;</span><span class="p">],</span>
+                                                      <span class="n">drop_last</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;drop_last&quot;</span><span class="p">],</span>
+                                                      <span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">],</span> <span class="c1"># doit permettre de fixer toutes les seed:  A généraliser</span>
+                                                      <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">])</span>
+    
+    <span class="c1">#generate_signature = kwargs[&quot;generate_signature&quot;], # à potentiellement déplacer soit dans dataset_kwargs (dataset method) ou laisser gérer par manager</span>
+    <span class="c1"># Model_manager contains the model. adapted to the dataset signature if user asked for it</span>
+    <span class="n">model_manager</span> <span class="o">=</span> <span class="n">plug_ai</span><span class="o">.</span><span class="n">managers</span><span class="o">.</span><span class="n">ModelManager</span><span class="p">(</span><span class="n">plug_dataset</span> <span class="o">=</span> <span class="n">dataset_manager</span><span class="p">,</span> <span class="c1"># à dégager</span>
+                                                  <span class="n">model</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">],</span>
+                                                  <span class="n">device</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">],</span>
+                                                  <span class="n">model_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;model_kwargs&quot;</span><span class="p">],</span>
+                                                  <span class="n">mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;mode&quot;</span><span class="p">],</span>
+                                                  <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">]</span>
+                                                  <span class="p">)</span>
+    <span class="c1">#                                              use_signature = kwargs[&quot;use_signature&quot;], # a bouger dans model_kwargs</span>
+    <span class="c1">#                                              checkpoints_path = kwargs[&quot;checkpoints_path&quot;],</span>
+    <span class="c1">#                                              res_out = kwargs[&quot;res_out&quot;],</span>
+
+    <span class="c1"># Execution_manager runs a training/evaluation/inference process. </span>
+    <span class="c1"># Some parameters such as batch_size=&quot;auto&quot; will run first a finding params loop.</span>
+    <span class="n">execution_manager</span> <span class="o">=</span> <span class="n">plug_ai</span><span class="o">.</span><span class="n">managers</span><span class="o">.</span><span class="n">ExecutionManager</span><span class="p">(</span><span class="n">dataset_manager</span> <span class="o">=</span> <span class="n">dataset_manager</span><span class="p">,</span> 
+                                                          <span class="n">model_manager</span> <span class="o">=</span> <span class="n">model_manager</span><span class="p">,</span>
+                                                          <span class="n">loop</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;loop&quot;</span><span class="p">],</span> <span class="c1"># txt | callable (doit respecter un formalisme)</span>
+                                                          <span class="n">loop_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;loop_kwargs&quot;</span><span class="p">],</span>
+                                                          <span class="n">mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;mode&quot;</span><span class="p">],</span>
+                                                          <span class="n">nb_epoch</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;nb_epoch&quot;</span><span class="p">],</span>
+                                                          <span class="n">device</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">],</span>
+                                                          <span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">],</span>
+                                                          <span class="n">report_log</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;report_log&quot;</span><span class="p">],</span>
+                                                          <span class="n">criterion</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;criterion&quot;</span><span class="p">],</span> <span class="c1"># txt | callable | instance herite loss pytorch</span>
+                                                          <span class="n">criterion_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;criterion_kwargs&quot;</span><span class="p">],</span> 
+                                                          <span class="n">metric</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;metric&quot;</span><span class="p">],</span>
+                                                          <span class="n">metric_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;metric_kwargs&quot;</span><span class="p">],</span>
+                                                          <span class="n">optimizer</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">],</span> <span class="c1"># txt | callable</span>
+                                                          <span class="n">optimizer_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;optimizer_kwargs&quot;</span><span class="p">],</span>
+                                                          <span class="n">lr_scheduler</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;lr_scheduler&quot;</span><span class="p">],</span>
+                                                          <span class="n">lr_scheduler_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;lr_scheduler_kwargs&quot;</span><span class="p">],</span>
+                                                          <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">])</span>
+    <span class="c1">#learning_rate = kwargs[&quot;learning_rate&quot;],</span>
+    <span class="c1"># TODO, remove config export from parser and put it in execution_manager</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&gt; Complete execution in: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">))</span>    </div>
+    
+ 
+
+   
+<span class="c1"># Press the green button in the gutter to run the script.</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Plug-AI main application</span>
+<span class="sd">    Placeholder for detailed documentation</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="c1"># Args are now in a dictionnary =&gt; args.value is now args[&quot;value&quot;]</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">plug_ai</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">parse_config</span><span class="p">(</span><span class="n">parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">plug_ai</span><span class="o">.</span><span class="n">managers</span><span class="o">.</span><span class="n">DatasetManager</span><span class="o">.</span><span class="n">createParser</span><span class="p">(),</span>
+                                                   <span class="n">plug_ai</span><span class="o">.</span><span class="n">managers</span><span class="o">.</span><span class="n">ModelManager</span><span class="o">.</span><span class="n">createParser</span><span class="p">(),</span>
+                                                   <span class="n">plug_ai</span><span class="o">.</span><span class="n">managers</span><span class="o">.</span><span class="n">ExecutionManager</span><span class="o">.</span><span class="n">createParser</span><span class="p">(),</span>
+                                                   <span class="n">plug_ai</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">createGlobalParser</span><span class="p">()</span>
+                                                  <span class="p">])</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Plug-AI 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plug_ai.__main__</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, C.Frindel &amp; M.Sdika.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

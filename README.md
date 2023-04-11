@@ -7,9 +7,18 @@ Il est possible de faire un suivi avec tensorboard (option "report_log"), les lo
 Les poids du modèle seront enregistrés par défaut dans le dossier checkpoints.
 
 # Installation
-Pour utiliser plug_ai comme une librairie,pour le moment, ajouter le chemin de plug_ai au path Python.
-```
-export PYTHONPATH=$PYTHONPATH:/gpfsdswork/projects/rech/ibu/ssos023/Plug-AI/
-```
+Pour utiliser plug_ai comme une librairie, plusieurs options se présentent selon le contexte.
 
-A venir : permettre une installation via pip
+Sur Jean-Zay: 
+    - module load pytorch-gpu/py3/1.10.1
+    - git clone plug_ai
+    - A la racine du dossier plug_ai : ```pip install --user --no-cache-dir -e .```
+    ou
+    - ```export PYTHONPATH=$PYTHONPATH:/path_to_Plug-AI/```
+Les requirements sont dans le module pytorch chargé.
+
+
+Ailleurs: 
+    - git clone plug_ai
+    - A la racine du dossier plug_ai : ```pip install --user --no-cache-dir -e .``` 
+ WIP : faire les requirements pour l'install sans module  

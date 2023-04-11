@@ -39,8 +39,8 @@ model_kwargs:     #model_args MODEL_ARGS
 ##################################### Execution arguments : ######################################
 ##################################################################################################
 #Training settings
-nb_epoch: 1
-learning_rate: '5e-05' #lr, learning rate, either a value or a string in "list of strategies"
+nb_epoch: 10
+#learning_rate: '5e-05' #lr, learning rate, either a value or a string in "list of strategies"
 device: cuda
 random_seed: 2022  # None for real randomness, set an integer for reproductibility
 report_log: False
@@ -58,13 +58,15 @@ optimizer_kwargs:
     momentum: 0.99
     weight_decay: 3e-5
     nesterov: True
-lr_scheduler: LambdaLR
+lr_scheduler: None
 lr_scheduler_kwargs:
+    step_size: 2
+    verbose: True
 
 # You can choose between "Default", or a criterion in the list of valid criterions.
 # Complete criterion_kwargs according to the args needed for the criterion you selected
 # "Default" option do not make use of any kwargs
-criterion: Default
+criterion: NonAdjLoss
 criterion_kwargs:
     to_onehot_y: False
     softmax: True

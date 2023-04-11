@@ -13,7 +13,7 @@ dataset_kwargs:
     dataset_dir: /gpfswork/rech/ibu/commun/Task01_BrainTumour/ # Absolute path to the dataset root dir
     download_dataset: false
     transformation: DecathlonT1_transform
-preprocess: false
+preprocess: null
 preprocess_kwargs:
 #We will have to define the structure of the dataset according to each task and do some auto-selection of models accordingly
 generate_signature: true

@@ -13,7 +13,7 @@ from ..utils.parser import check_parse_config
 from typing import Callable
 from monai.data import Dataset
 
-from ..data import supported_datasets
+from ..data import supported_datasets, supported_preprocessing
 from ..models import supported_models
 #from ..runners import supported_modes
 import json
@@ -111,16 +111,17 @@ class DatasetManager:
         
         # Here we can have various preprocessing solutions, one of them being nnUnet (crop...)
         # We might need a preprocess_kwargs
-        if self.preprocess:
+        
+        if self.preprocess is not None:
             print_verbose("Preprocessing the dataset",
                           print_lvl = "RESTRICTED", 
                           verbose_lvl = self.verbose)
-            # self.dataset_dir = run_preprocessing() #save preprocessed data in a new dir
+            preprocessing_output = self.run_preprocessing()
         
         plug_ai_dataset = self.get_dataset_class()
         print(self.dataset)
         if self.dataset != "nnU-Net":
-            print("GOT HEEEERE")
+            print("Loaded the dataset")
             self.dataset = plug_ai_dataset.dataset 
 
             # Dataset splitting : maybe put everything in a function and allow for multiple strategies
@@ -223,6 +224,11 @@ class DatasetManager:
         else :
             raise ValueError('Expected a dataset in the valid list of datasets.')
         return dataset
+    
+    def run_preprocessing(self):
+        preprocess_kwargs_filtered = filter_dict(self.preprocess, self.preprocess_kwargs)
+        output = self.preprocess(**preprocess_kwargs_filtered) 
+        return output
     
     @staticmethod
     def call_class_method(class_method, kwargs):        
@@ -353,7 +359,7 @@ class ExecutionManager:
         class_args.add_argument("--loop_kwargs", type=dict) # Training, Evaluation, Inference,
         class_args.add_argument("--mode", type=arg2bool) # Training, Evaluation, Inference,
         class_args.add_argument("--nb_epoch", type=int)
-        class_args.add_argument("--learning_rate", type=float, help = "Learning rate")
+        #class_args.add_argument("--learning_rate", type=float, help = "Learning rate")
         class_args.add_argument("--device", type=arg2device)
         class_args.add_argument("--seed", type=int) 
         class_args.add_argument("--report_log", type=arg2bool) # why str ?
@@ -363,10 +369,10 @@ class ExecutionManager:
         class_args.add_argument("--metric_kwargs", type=dict)
         class_args.add_argument("--optimizer", type=str)
         class_args.add_argument("--optimizer_kwargs", type=dict)
+        class_args.add_argument("--lr_scheduler", type=str)
+        class_args.add_argument("--lr_scheduler_kwargs", type=dict)
         class_args.add_argument("--verbose", type=str)
-        #class_args.add_argument("--batch_size", type=int)
-
-
+        #class_args.add_argument("--batch_size", type=int) #DatasetManager Parameter
         return parser
     
     
@@ -377,7 +383,6 @@ class ExecutionManager:
                  loop_kwargs = {},
                  mode = "Training",
                  nb_epoch = 2,
-                 learning_rate = 5e-05,
                  device = "cuda",
                  seed = 2022,
                  report_log = False,
@@ -387,15 +392,17 @@ class ExecutionManager:
                  metric_kwargs = {},
                  optimizer = None,
                  optimizer_kwargs = {},
+                 lr_scheduler = None,
+                 lr_scheduler_kwargs = {},
                  verbose = "FULL"
                 ):
-        
+        #learning_rate = 5e-05,
 
         self.loop = loop
         self.loop_kwargs = loop_kwargs
         self.mode = mode
         self.nb_epoch = nb_epoch
-        self.learning_rate = learning_rate
+        #self.learning_rate = learning_rate
         self.device = device
         self.seed = seed
         self.report_log = report_log
@@ -405,6 +412,8 @@ class ExecutionManager:
         self.metric_kwargs = metric_kwargs
         self.optimizer = optimizer
         self.optimizer_kwargs = optimizer_kwargs
+        self.lr_scheduler = lr_scheduler
+        self.lr_scheduler_kwargs = lr_scheduler_kwargs
         self.verbose = verbose
         
         # Inside Manager check and parse of arguments reusing the same parser
@@ -442,10 +451,12 @@ class ExecutionManager:
                 self.loop_kwargs["val_loader"] = self.dataset_manager.val_loader
                 self.loop_kwargs["model"] = self.model_manager.model
                 self.loop_kwargs["optimizer"] = self.optimizer
+                self.loop_kwargs["lr_scheduler"] = self.lr_scheduler
                 self.loop_kwargs["criterion"] = self.criterion
                 self.loop_kwargs["metric"] = self.metric
                 self.loop_kwargs["optimizer_kwargs"] = self.optimizer_kwargs
                 self.loop_kwargs["criterion_kwargs"] = self.criterion_kwargs
+                self.loop_kwargs["lr_scheduler_kwargs"] = self.lr_scheduler_kwargs
                 self.loop_kwargs["metric_kwargs"] = self.metric_kwargs
                 self.loop_kwargs["nb_epoch"] = self.nb_epoch
                 self.loop_kwargs["device"] = self.device

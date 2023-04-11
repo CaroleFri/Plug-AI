@@ -90,7 +90,7 @@ def check_parse_config(config = {}, source="CLI"):
     
     keys2parser = {"dataset" : str,
                    "dataset_kwargs" : arg2dict,
-                   "preprocess" : str,
+                   "preprocess" : arg2preprocess,
                    "preprocess_kwargs" : arg2dict,
                    "generate_signature" : arg2bool, 
                    "batch_size" : int,
@@ -118,9 +118,12 @@ def check_parse_config(config = {}, source="CLI"):
                    "metric" : arg2metric,
                    "metric_kwargs" : arg2dict,
                    "optimizer" : arg2optimizer,
+                   "lr_scheduler" : arg2lr_scheduler,
+                   
                    "optimizer_kwargs" : arg2dict,
                    "execution_kwargs" : arg2dict, 
-
+                   "lr_scheduler_kwargs" : arg2dict,
+                   
                    "config_file" : str,
                    "export_config" : arg2path,
                    "mode" : arg2mode,

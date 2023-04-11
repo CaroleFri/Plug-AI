@@ -6,7 +6,6 @@ See PLUG_AI_WEBSITE for complete documentation.
 """
 
 #Relative imports
-
 from . import loss
 from . import models
 from . import managers
@@ -16,11 +15,8 @@ from . import report
 from . import runners
 from . import utils
 
-#Objects we want in root plug_ai
-#from .submodule import object
-#from .data import *
 
-__version__ = "0.1.dev"
+__version__ = "03.23.dev"
 
 
 #__all__ = ["data"]

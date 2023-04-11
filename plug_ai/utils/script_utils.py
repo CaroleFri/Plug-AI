@@ -5,7 +5,7 @@ import torch
 import inspect
 import os
 from ..loss import supported_criterion, supported_metric
-from ..optim import supported_optimizer
+from ..optim import supported_optimizer, supported_lr_scheduler
 import json
 from typing import Callable
 
@@ -207,6 +207,22 @@ def arg2optimizer(input):
         raise ValueError('Expected optimizer to be : a torch optimizer callable, a string in the valid list of optimizer or None(default optim).')
     return optimizer
 
+
+def arg2lr_scheduler(input):
+    if isinstance(input, Callable):
+        lr_scheduler = input
+    elif input is None:
+        lr_scheduler = None #supported_lr_scheduler["Default"] 
+    elif isinstance(input, str):        
+        if input == "Default":
+            lr_scheduler = supported_lr_scheduler["Default"]
+        else:
+            lr_scheduler = supported_lr_scheduler[input]
+    else:
+        raise ValueError('Expected lr_scheduler to be : a torch learning_rate scheduler, a string in the valid list of lr_scheduler or None.')
+    return lr_scheduler
+
+
 def arg2loop(input):
     from ..runners import supported_loop
     
@@ -239,6 +255,23 @@ def arg2step(input):
     else:
         raise ValueError('Expected a train step: : a callable or a string in the valid list of step or None(default train step).')
     return step
+
+
+def arg2preprocess(input):
+    from ..data import supported_preprocessing
+    if input is None:
+        preprocess = None
+    elif isinstance(input, Callable):
+        preprocess = input
+    elif isinstance(input, str):
+        if input in supported_preprocessing:
+            preprocess = supported_preprocessing[input] 
+        else:
+            raise ValueError('Expected a preprocess in the valid list of preprocessings.')
+    else:
+            raise ValueError('Expected a preprocessing callable (dev only) or a valid preprocessing option or None.')
+    return preprocess
+
 
 
 def download_file_from_google_drive(id, destination):

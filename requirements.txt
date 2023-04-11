@@ -1,1 +1,10 @@
-TO BE DEFINED
+gdown==4.6.0
+monai==1.1.0
+numpy==1.21.2
+pandas==1.4.1
+requests==2.27.1
+ruamel.yaml==0.17.21
+setuptools==59.5.0
+torch==1.10.0a0+git302ee7b
+torchmed==0.0.1a0
+PyYAML==5.4.1

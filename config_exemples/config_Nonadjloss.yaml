@@ -1,0 +1,98 @@
+# Default config is used even if no config file is specified in CLI. Undefined arguments will take the default values.
+# default_config_file: /gpfsdswork/projects/idris/sos/ssos023/Projects/Plug-AI/Plug-AI/JZ_experiments/config_BrainTumour.yaml
+
+# IDEA: MAKE DEFAULT CONFIG TRIGGER INDICATIONS PROGRESSIVELY ON HOW TO USE PLUG_AI (MISSING ARGUMENTS WHICH LEAD TO ERRORS?)
+
+##################################################################################################
+######################################## Data arguments : ########################################
+##################################################################################################
+# We must define precisely which arguments must be "mandatory" and are related to our general pipeline and which are related
+# to the dataset class specificaly
+dataset: DecathlonT1
+dataset_kwargs:
+    dataset_dir: /gpfswork/rech/ibu/commun/Task01_BrainTumour/ # Absolute path to the dataset root dir
+    download_dataset: false
+    transformation: remove_depth
+preprocess: None
+preprocess_kwargs:
+#We will have to define the structure of the dataset according to each task and do some auto-selection of models accordingly
+generate_signature: true
+train_ratio: 1 #How to specify the split? Train ratio => Dataset => train+val (train_ratio) | test (1 - train_ratio)
+val_ratio: 0.2 #A subfraction of the train set to use for validation (train_ratio * val_ratio = val_real_ratio)
+limit_sample: 20
+batch_size: 2
+shuffle: true
+drop_last: true
+
+
+##################################################################################################
+####################################### Model arguments : ########################################
+##################################################################################################
+
+model: ModSegNet     #model_type MODEL_TYPE
+model_kwargs:     #model_args MODEL_ARGS
+    num_classes: 5
+    checkpoint_path: ./model_checkpoint
+    res_out: false # probably integrate res_out as a model_kwargs 
+    use_signature: false # model specific value for now? as it is only for nnunet
+
+
+
+##################################################################################################
+##################################### Execution arguments : ######################################
+##################################################################################################
+#Training settings
+nb_epoch: 1
+learning_rate: '5e-05' #lr, learning rate, either a value or a string in "list of strategies"
+device: cuda
+random_seed: 2022  # None for real randomness, set an integer for reproductibility
+report_log: False
+
+# You can choose between "Default", or a criterion in the list of valid optimizers.
+# Complete optimizer_kwargs according to the args needed for the optimizer you selected
+# "Default" option do not make use of any kwargs
+loop: Default
+loop_kwargs :
+    step : Default
+    step_kwargs :
+optimizer: SGD
+optimizer_kwargs:
+    lr: 0.0001
+    momentum: 0.99
+    weight_decay: 3e-5
+    nesterov: True
+lr_scheduler: None
+lr_scheduler_kwargs:
+    step_size: 2
+    verbose: True
+
+# You can choose between "Default", or a criterion in the list of valid criterions.
+# Complete criterion_kwargs according to the args needed for the criterion you selected
+# "Default" option do not make use of any kwargs
+criterion: NonAdjLoss
+criterion_kwargs:
+    nb_labels: 5
+metric: None
+metric_kwargs:
+
+# Execution settings
+
+# Reporting settings
+
+
+
+##################################################################################################
+####################################### Global arguments : #######################################
+##################################################################################################
+config_file: null
+export_config: null
+mode: TRAINING # Choose between Training, Evaluation, Inference
+verbose: FULL #Full, Restricted, None
+seed: null
+
+#Global arguments:
+#config_file:
+#config_file: ./config_Brats.yaml
+##################################################################################################
+######################################## Extra arguments : #######################################
+##################################################################################################

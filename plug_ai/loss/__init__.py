@@ -1,6 +1,6 @@
 from monai.losses import DiceLoss, GeneralizedDiceLoss, GeneralizedWassersteinDiceLoss, DiceCELoss, DiceFocalLoss, GeneralizedDiceFocalLoss, FocalLoss, TverskyLoss, ContrastiveLoss
 from monai.metrics import DiceMetric, MeanIoU # need to update monai
-from .NonAdjLoss import AdjacencyEstimator
+from .NonAdjLoss import NonAdjLoss
 
 # Bellow are only added segmentation losses, all tested with brats and default loop/loss parameters
 supported_criterion = {
@@ -12,8 +12,11 @@ supported_criterion = {
     'GeneralizedDiceFocalLoss' : GeneralizedDiceFocalLoss,
     'FocalLoss' : FocalLoss,
     'TverskyLoss' : TverskyLoss,
-    'NonAdjLoss' : AdjacencyEstimator
+    'NonAdjLoss' : NonAdjLoss,
 }
+
+
+
 
 ### Non-working :
 ## 'GeneralizedWassersteinDiceLoss' : GeneralizedWassersteinDiceLoss, => need a dist_matrix between classes to initialize
@@ -29,6 +32,8 @@ supported_criterion = {
 ## Because we only talked about segmentation, I only added segmentation losses, but how to tackle other usecases : reconstruction or registration losses for example
 
 supported_metric = {
+    None : None,
+    'None' : None,
     'Default' :  DiceMetric,
     'MeanDice' : DiceMetric,
     'MeanIoU' : MeanIoU

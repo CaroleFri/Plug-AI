@@ -59,6 +59,9 @@ loop_kwargs :
     network_trainer: "nnUNetTrainerV2"
     task: 4
     fold: "all"
+    
+lr_scheduler: None
+lr_scheduler_kwargs:
 #validation_only: 
 #continue_training:
 #plans_identifier:
