@@ -15,7 +15,6 @@ build:
 sphinx:
    builder: html
    configuration: docs/source/conf.py
-   source_dir: docs/source
    fail_on_warning: false
 
 # If using Sphinx, optionally build your docs in additional formats such as PDF
