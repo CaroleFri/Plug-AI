@@ -4,21 +4,20 @@
    contain the root `toctree` directive.
 
 
-Contents
---------
+.. include:: ../../README.md
+   :parser: myst_parser.sphinx_
+
+
 .. toctree::
-   :maxdepth: 1
-   self
+   :caption: Contents
+   :maxdepth: 2
+   
    installation
    getting_started   
    tutorials
    api_reference
    contributing
    code of conduct
-
-
-.. include:: ../../README.md
-   :parser: myst_parser.sphinx_
 
    
 
