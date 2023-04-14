@@ -1,4 +1,4 @@
- bnnnInstallation
+Installation
 ============
 
 In order to install and use Plug-AI, you have multiple options:
