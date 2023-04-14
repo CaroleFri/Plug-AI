@@ -1,2 +1,2 @@
-Contributing to Plug-AI
-=======================
+Contributing
+============
