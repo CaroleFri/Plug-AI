@@ -4,8 +4,6 @@
    contain the root `toctree` directive.
 
 
-.. _introducing-plug-ai:
-
 Contents
 --------
 .. toctree::
