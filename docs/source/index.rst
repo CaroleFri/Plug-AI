@@ -14,7 +14,7 @@
    
    installation
    getting_started   
-   tutorials
+   tutorial
    api_reference
    contributing
    code of conduct
