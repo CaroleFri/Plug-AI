@@ -10,7 +10,9 @@
 
 .. toctree::
    :caption: Contents
-   :maxdepth: 2
+   :maxdepth: 1
+   :hidden:
+
    
    installation
    getting_started   
