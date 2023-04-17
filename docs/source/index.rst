@@ -17,10 +17,10 @@
    installation
    getting_started   
    tutorial
-   feature catalogue
+   feature_catalogue
    api_reference
    contributing
-   code of conduct
+   code_of_conduct
 
    
 
