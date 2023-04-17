@@ -23,3 +23,4 @@ supported_preprocessing = {
     'None' : None,
 }
 #    'MICCAI_preprocessing' : MICCAI_preprocessing,
+# Removed MICCAI because of OPENCV issues.
