@@ -9,7 +9,6 @@
 
 
 .. toctree::
-   :caption: Contents
    :maxdepth: 1
    :hidden:
 
