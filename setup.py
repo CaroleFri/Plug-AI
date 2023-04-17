@@ -13,4 +13,3 @@ setup(
     keywords='plug_ai medical ai framework pytorch segmentation nifti',
     install_requires=requirements,
 )
-)
