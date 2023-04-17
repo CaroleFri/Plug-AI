@@ -32,7 +32,7 @@ In the documentation, you will find [examples and use cases](https://plug-ai.rea
 
 ## Contributions and code of conduct
 
-Every contribution is welcome. Each member of the project is expected to follow the [code of conduct](https://github.com/CaroleFri/Plug-AI/blob/main/CODE_OF_CONDUCT.md).
+Every contribution is welcome. Each member of the project is expected to follow the [code of conduct](https://plug-ai.readthedocs.io/en/latest/code_of_conduct.html).
 
 ## Support
 
