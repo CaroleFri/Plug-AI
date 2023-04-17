@@ -19,19 +19,18 @@ If you want to install from sources, you can clone the git repositery and instal
 
 
 
-From pip (Work in progress)
+Using pip (Work in progress)
 -----------------------------------
 
 .. code-block:: bash
 
-    pip install plug-ai
+    pip install git+https://github.com/CaroleFri/Plug-AI
     
 Reminder: On jean-zay, you must do installations using :
 
 .. code-block:: bash
 
-    pip install --user --no-cache-dir plug-ai
-
+    pip install --user --no-cache-dir package_name
 
 
 
