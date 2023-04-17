@@ -16,11 +16,10 @@ supported_datasets = {
 #    'MICCAI' : MICCAI2012Dataset
 
 
-
-from .MICCAI import MICCAI_preprocessing
+#from .MICCAI import MICCAI_preprocessing
 
 supported_preprocessing = {
     None : None,
     'None' : None,
-    'MICCAI_preprocessing' : MICCAI_preprocessing,
 }
+#    'MICCAI_preprocessing' : MICCAI_preprocessing,
