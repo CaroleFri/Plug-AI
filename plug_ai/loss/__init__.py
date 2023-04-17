@@ -11,8 +11,7 @@ supported_criterion = {
     'DiceFocalLoss' : DiceFocalLoss,
     'GeneralizedDiceFocalLoss' : GeneralizedDiceFocalLoss,
     'FocalLoss' : FocalLoss,
-    'TverskyLoss' : TverskyLoss,
-    'NonAdjLoss' : NonAdjLoss,
+    'TverskyLoss' : TverskyLoss
 }
 
 
@@ -22,7 +21,7 @@ supported_criterion = {
 ## 'GeneralizedWassersteinDiceLoss' : GeneralizedWassersteinDiceLoss, => need a dist_matrix between classes to initialize
 # Idea : parse the list into (Union[ndarray, Tensor]) which is the expected format for dist_matrix
 ## 'ContrastiveLoss' : ContrastiveLoss => Deprecated
-
+# 'NonAdjLoss' : NonAdjLoss, => not fully automated yet
 
 ### WIP : 
 ## How to allow for the use of these loss which do not follow the "input->target formalism" of our loops.
