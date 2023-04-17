@@ -18,7 +18,7 @@
    tutorial
    feature_catalogue
    api_reference
-   contributing
+   contribution
    code_of_conduct
 
    
