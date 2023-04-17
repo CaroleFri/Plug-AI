@@ -16,27 +16,6 @@ supported_optimizer = {
     'Rprop' : Rprop,
     'SGD' : SGD    
 }
-## WIP
-#    'SparseAdam' : SparseAdam, => Not added because not tested. Need of sparse tensors for it
-#     'LBFGS' : LBFGS, => need a special optimizer.step(closure) in the loop
-
-
-
-supported_lr_scheduler_old = {
-    None : None,
-    'None' : None,
-    'Default' : None,
-    'StepLR' : StepLR,
-    'MultiStepLR' : MultiStepLR,
-    'ConstantLR' : ConstantLR,
-    'LinearLR' : LinearLR,
-    'ExponentialLR' : ExponentialLR,
-    'CosineAnnealingLR' : CosineAnnealingLR,
-    'ReduceLROnPlateau' : ReduceLROnPlateau,
-    'CyclicLR' : CyclicLR,
-    'OneCycleLR' : OneCycleLR,
-    'CosineAnnealingWarmRestarts' : CosineAnnealingWarmRestarts
-}
 
 supported_lr_scheduler = {
     None : {'scheduler':None, 'scheduler_update':None},
@@ -53,15 +32,3 @@ supported_lr_scheduler = {
     'OneCycleLR' : {'scheduler':OneCycleLR, 'scheduler_update':"batch"},
     'CosineAnnealingWarmRestarts' : {'scheduler':CosineAnnealingWarmRestarts, 'scheduler_update':"epoch"},
 }
-# In order to add a scheduler : add an item to the suppoter_lr_scheduler.
-# Item structure : {'scheduler':callable that instantiate the scheduler, 'scheduler_update': where the scheduler.step() is supposed to be positionned (for now only epoch/batch options)}
-# To add another position, trainer must be adapted.
-# Some LR_schedulers expects a specific parameter in steps. For example ReduceLROnPlateau needs a "metrics". In the trainer, put every 
-
-## WIP 
-# lr_scheduler.ChainedScheduler => nested dictionnaries to give multive schedulers in a chain?
-# lr_scheduler.SequentialLR => same as ChainedScheduler
-# lr_scheduler.PolynomialLR => cannot import it, available from 1.13+
-# 'LambdaLR' : LambdaLR => how to allow for a lambda given by config file? Dev only compatibility?
-# 'MultiplicativeLR' : MultiplicativeLR, #Function expects a lambda, risky injection from config file. Dev only compatibility?
-

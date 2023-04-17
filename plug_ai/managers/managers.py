@@ -4,7 +4,6 @@ import torch.nn as nn
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from ..models.DynUNet import PlugDynUNet
-from ..data.datasets import *
 from ..runners import *
 from ..utils.script_utils import *
 #from ..utils.script_utils import print_verbose
@@ -178,20 +177,6 @@ class DatasetManager:
                                   batch_size=self.batch_size,
                                   shuffle=False, #Shuffle not important for inference
                                   drop_last=False) #Infer on all data
-
-
-            ''' GENERATE SIGNATURE : maybe let it a dataset manager arg. Motivation : we can more easily define a self.signature attribute that is passed to the following managers
-            #class_args.add_argument("--generate_signature", type=arg2bool, help="A boolean that indicates if nnUnet fingerprint should be determined.")
-            #generate_signature = True,
-            # maybe make this parameter dataset specific with an nnUnet_dataset_class
-
-            if self.generate_signature:
-                print_verbose("Generating signature",
-                              print_lvl = "RESTRICTED", 
-                              verbose_lvl = self.verbose)
-                self.signature = None #WIP signature on full dataset? on train_set? 
-            '''
-
         
         if self.verbose == "Full" :
             print("Dataset prepared !")
@@ -482,43 +467,3 @@ class ExecutionManager:
         
 
         print("Execution over")
-        
-        
-'''        
-    def run_mode(self):
-        # remove those checks by incorporating them in arg types/parser checker
-        if self.mode in supported_modes :
-            print("Running execution in mode : ", self.mode)
-            if self.mode == "Training":
-                output = supported_modes[self.mode](train_loader = dataset_manager.train_loader, 
-                                                    model = model_manager.model,
-                                                    optimizer = self.optimizer, 
-                                                    criterion = self.criterion, 
-                                                    nb_epoch = self.nb_epoch, 
-                                                    device = self.device) 
-            if self.mode == "Inference":
-                output = supported_modes[self.mode](dataset_manager.train_loader, model, kwargs) 
-            
-                
-        else:
-            raise ValueError('Expected a mode in the valid list of modes.')
-        return output
-'''
-
-
-
-'''
-    def __init__(self, **kwargs):
-        """
-        Args
-        Returns
-        """
-        # dataset=None, preprocess=None, verbose=True,
-        # Removed parameters from function to avoid collision between a directly given parameter and the same one given with kwargs
-        self.kwargs = {
-            'dataset' : 'Dataset_A',
-            'preprocess' : None,
-            'verbose' : 'Full'
-            'mode' : 'Training'} # Default values for the func
-        self.kwargs.update(kwargs) 
-'''

@@ -1,8 +1,7 @@
 """
 Plug_AI module for Python
-==================================
-Plug_AI description
-See PLUG_AI_WEBSITE for complete documentation.
+=========================
+Plug-AI is a tool developed with the goal of easing the application of deep learning techniques within the medical field. To achieve this, Plug-AI offers two distinct functionalities that cater to different user needs.
 """
 
 #Relative imports
