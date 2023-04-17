@@ -32,13 +32,11 @@ In the documentation, you will find [examples and use cases](https://plug-ai.rea
 
 ## Contributions and code of conduct
 
-Every contribution is welcome. Each member of the project is expected to follow the [code of conduct](WIP).
+Every contribution is welcome. Each member of the project is expected to follow the [code of conduct](https://github.com/CaroleFri/Plug-AI/blob/main/CODE_OF_CONDUCT.md).
 
 ## Support
 
-You can ask questions and join the development discussion:
-* On the Plug-AI [slack channel](WIP)
-* On the Plug-AI [mailing list](WIP)
+You can ask questions and join the development discussion using GitHub Issues and Pull Requests functionnalities.
 
 You can also post bug reports and feature requests in Github issues.
 
@@ -51,5 +49,12 @@ If you use Plug-AI in your research and find it useful, please cite us
 using the link to our documentation [https://plug-ai.readthedocs.io/](https://plug-ai.readthedocs.io/).
 
 In Bibtex format:
-WIP
-
+```bibtex
+@misc{Plug-AI,
+    title = {{Plug-AI}: A Deep Learning Tool for Medical Applications},
+    author = {C.Frindel & M.Sdika},
+    year = {2022},
+    note = {Available at: https://plug-ai.readthedocs.io/},
+    organization = {CREATIS},
+}
+```
