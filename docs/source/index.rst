@@ -17,6 +17,7 @@
    installation
    getting_started   
    tutorial
+   feature catalogue
    api_reference
    contributing
    code of conduct
