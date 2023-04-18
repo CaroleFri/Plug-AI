@@ -5,6 +5,10 @@ import plug_ai
 
 
 def main(kwargs):
+    '''
+    Placeholder
+    '''
+    
     print("Plug-AI running with config:")
     [print('\t', key,':',value) for key, value in kwargs.items()]
     

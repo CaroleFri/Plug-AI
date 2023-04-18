@@ -1,4 +1,3 @@
-from torch.utils.data import DataLoader
 from monai.data import Dataset
 import os
 from .data_aug import available_transforms
