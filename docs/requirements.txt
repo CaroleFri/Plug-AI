@@ -2,4 +2,4 @@ sphinx
 sphinx-rtd-theme
 sphinx-copybutton
 myst-parser
--e ../plug_ai
+git+https://github.com/CaroleFri/Plug-AI
