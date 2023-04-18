@@ -57,6 +57,7 @@ By default, the learning rate is static and no learning rate scheduler is used b
 Criterions (loss)
 #################
 The available loss are:
+
 - DiceLoss
 - GeneralizedDiceLoss
 - DiceCELoss
