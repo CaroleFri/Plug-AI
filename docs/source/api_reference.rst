@@ -12,7 +12,7 @@ Plug-AI can be used as an application with the following parameters by calling:
 
 Below are the arguments for plug_ai
 
-.. automodule:: __main__
+.. automodule:: plug_ai.__main__
    :name: plug_ai
    :members: main
 
