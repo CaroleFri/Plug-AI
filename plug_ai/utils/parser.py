@@ -3,9 +3,11 @@ import yaml as yl
 import ruamel.yaml
 from .script_utils import *
 import os
+import pkg_resources
 
-utils_folder = os.path.dirname(os.path.realpath(__file__))
-default_config_file = os.path.join(utils_folder, "default_config.yaml")
+#utils_folder = os.path.dirname(os.path.realpath(__file__))
+#default_config_file = os.path.join(utils_folder, "default_config.yaml")
+default_config_file = pkg_resources.resource_filename('plug_ai', 'ressources/default_config.yaml')
 
 import sys
 
