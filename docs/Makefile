@@ -14,7 +14,11 @@ help:
 
 .PHONY: help Makefile
 
+
+
+    
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
+	@python -m plug_ai -h > $(abspath source/plug_ai_help.txt)
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

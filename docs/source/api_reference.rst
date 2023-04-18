@@ -12,11 +12,9 @@ Plug-AI can be used as an application with the following parameters by calling:
 
 Below are the arguments for plug_ai
 
-.. automodule:: plug_ai.__main__
-   :name: plug_ai
-   :members: main
-
-
+.. literalinclude:: plug_ai_help.txt
+   :language: console
+   
 You can provide a configuration of all the arguments using --config_file. Arguments given both in the config file and the console are overwritten by the console. This can be useful if you are working with a general config file and are testing variations of just a few parameters.
 
 

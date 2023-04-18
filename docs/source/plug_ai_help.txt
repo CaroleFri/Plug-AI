@@ -1,0 +1,57 @@
+usage: __main__.py [-h] [--dataset DATASET] [--dataset_kwargs DATASET_KWARGS] [--preprocess PREPROCESS] [--preprocess_kwargs PREPROCESS_KWARGS] [--batch_size BATCH_SIZE] [--train_ratio TRAIN_RATIO]
+                   [--val_ratio VAL_RATIO] [--limit_sample LIMIT_SAMPLE] [--shuffle SHUFFLE] [--drop_last DROP_LAST] [--model MODEL] [--model_kwargs MODEL_KWARGS] [--loop LOOP] [--loop_kwargs LOOP_KWARGS]
+                   [--nb_epoch NB_EPOCH] [--device DEVICE] [--report_log REPORT_LOG] [--criterion CRITERION] [--criterion_kwargs CRITERION_KWARGS] [--metric METRIC] [--metric_kwargs METRIC_KWARGS]
+                   [--optimizer OPTIMIZER] [--optimizer_kwargs OPTIMIZER_KWARGS] [--lr_scheduler LR_SCHEDULER] [--lr_scheduler_kwargs LR_SCHEDULER_KWARGS] [--config_file CONFIG_FILE]
+                   [--export_config EXPORT_CONFIG] [--mode MODE] [--seed SEED] [--verbose VERBOSE]
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Data arguments:
+  --dataset DATASET     A dataset name in the valid list of of datasets supported by Plug_ai
+  --dataset_kwargs DATASET_KWARGS
+                        The dictionnary of args to use that are necessary for dataset
+  --preprocess PREPROCESS
+                        A valid preprocessing pipeline name provided by plug_ai
+  --preprocess_kwargs PREPROCESS_KWARGS
+                        A dictionnary of args that are given to the processing pipeline
+  --batch_size BATCH_SIZE
+                        Number of samples to load per batch
+  --train_ratio TRAIN_RATIO
+                        Float : The fraction of the dataset to use for training, the rest will be used for final evaluation
+  --val_ratio VAL_RATIO
+                        Float : The fraction of the train set to use for validation (hp tuning)
+  --limit_sample LIMIT_SAMPLE
+                        Index value at which to stop when considering the dataset
+  --shuffle SHUFFLE     Boolean that indicates if the dataset should be shuffled at each epoch
+  --drop_last DROP_LAST
+                        Boolean that indicates if the last batch of an epoch should be left unused when incomplete.
+
+Model arguments:
+  --model MODEL         A model in the valid list of supported model or a callable that instantiate a Pytorch/Monai model
+  --model_kwargs MODEL_KWARGS
+                        Every arguments which should be passed to the model callable
+
+Execution arguments:
+  --loop LOOP
+  --loop_kwargs LOOP_KWARGS
+  --nb_epoch NB_EPOCH
+  --device DEVICE
+  --report_log REPORT_LOG
+  --criterion CRITERION
+  --criterion_kwargs CRITERION_KWARGS
+  --metric METRIC
+  --metric_kwargs METRIC_KWARGS
+  --optimizer OPTIMIZER
+  --optimizer_kwargs OPTIMIZER_KWARGS
+  --lr_scheduler LR_SCHEDULER
+  --lr_scheduler_kwargs LR_SCHEDULER_KWARGS
+
+Global arguments:
+  --config_file CONFIG_FILE
+                        Path : The config file to set parameters more easily
+  --export_config EXPORT_CONFIG
+                        Path : If given, save the full config(combining CLI and config file) at the given path
+  --mode MODE           String : A mode between "TRAINING", "EVALUATION" and "INFERENCE"
+  --seed SEED           Int : If given, sets random aspect by setting random numbers generators
+  --verbose VERBOSE     String or None: The level of verbose wanted. None, "RESTRICTED" or "FULL"
