@@ -20,7 +20,7 @@ class MedNIST:
         self.nb_class = nb_class
 
         if self.download_dataset:
-            self.download(root_dir = os.path.dirname(self.dataset_dir))
+            self.download(root_dir = os.path.dirname(self.dataset_dir), progress=progress)
         
 
         self.dataset = self.get_dataset(self.dataset_dir, self.limit_sample, self.transformation, self.mode)
