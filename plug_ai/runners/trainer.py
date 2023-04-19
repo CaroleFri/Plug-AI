@@ -124,7 +124,7 @@ class Default_Trainer:
         :return:
         """
         self.optimizer.zero_grad()
-        output = self.inference_step(sample["input"])
+        output = self.inference_step(sample["input"])        
         loss = self.criterion(output, sample["label"].to(self.device))
 
         loss.backward()
@@ -142,7 +142,6 @@ class Default_Trainer:
         :param sample_inp: torch.Tensor
         :return: torch.Tensor
         """
-
         sample_inp = sample_inp.to(self.device)
         return self.model(sample_inp)
 

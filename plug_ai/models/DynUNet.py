@@ -48,7 +48,6 @@ class PlugDynUNet(nn.Module):
         # res_out: A model specific parameter
         #checkpoints_path: a path to checkpoints for the model
 
-
         self.base = DynUNet(spatial_dims = spatial_dims,
                             in_channels = in_channels ,
                             out_channels = out_channels ,

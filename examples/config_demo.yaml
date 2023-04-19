@@ -1,0 +1,62 @@
+# Default config is used even if no config file is specified in CLI. Undefined arguments will take the default values.
+##################################################################################################
+####################################### Global arguments : #######################################
+##################################################################################################
+config_file: null
+export_config: null
+mode: TRAINING # Choose between Training, Evaluation, Inference
+verbose: FULL #Full, Restricted, None
+seed: null
+##################################################################################################
+######################################## Data arguments : ########################################
+##################################################################################################
+dataset: MedNIST
+dataset_kwargs:
+    dataset_dir: /gpfswork/rech/ibu/commun/datasets/MedNIST # Absolute path to the dataset root dir
+    download_dataset: false
+    transformation: MedNIST_transform
+preprocess: null
+preprocess_kwargs:
+train_ratio: 1 #How to specify the split? Train ratio => Dataset => train+val (train_ratio) | test (1 - train_ratio)
+val_ratio: 0.2 #A subfraction of the train set to use for validation (train_ratio * val_ratio = val_real_ratio)
+limit_sample: 20
+batch_size: 2
+shuffle: true
+drop_last: true
+##################################################################################################
+####################################### Model arguments : ########################################
+##################################################################################################
+model: DenseNet     #model_type MODEL_TYPE
+model_kwargs:     #model_args MODEL_ARGS
+    spatial_dims: 2
+    in_channels: 1
+    out_channels: 6
+    img_size: 64    
+##################################################################################################
+##################################### Execution arguments : ######################################
+##################################################################################################
+#Training settings
+nb_epoch: 2
+device: cuda
+random_seed: 2022  # None for real randomness, set an integer for reproductibility
+report_log: False
+
+loop: Default
+optimizer: SGD
+optimizer_kwargs:
+    lr: 0.0001
+    momentum: 0.99
+    weight_decay: 3e-5
+    nesterov: True
+lr_scheduler: None
+lr_scheduler_kwargs:
+    step_size: 2
+    verbose: True
+
+criterion: DiceCELoss
+criterion_kwargs:
+    to_onehot_y: False
+    softmax: True
+
+metric: None
+metric_kwargs:

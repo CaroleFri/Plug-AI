@@ -33,7 +33,7 @@ supported_criterion = {
 supported_metric = {
     None : None,
     'None' : None,
-    'Default' :  DiceMetric,
+    'Default' :  None,
     'MeanDice' : DiceMetric,
     'MeanIoU' : MeanIoU
 }

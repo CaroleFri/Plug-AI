@@ -1,5 +1,15 @@
-from monai.transforms import Compose, EnsureChannelFirstd, LoadImaged, SpatialCropd, ConcatItemsd, AsDiscreted, SplitChanneld, SqueezeDimd
-
+from monai.transforms import Compose, EnsureChannelFirstd, LoadImaged, SpatialCropd, ConcatItemsd, AsDiscreted, SplitChanneld, SqueezeDimd, ScaleIntensity
+from monai.transforms import (
+    AddChannel,
+    AddChanneld,
+    Compose,
+    EnsureChannelFirst,
+    LoadImage,
+    ScaleIntensityd,
+    ToTensord,
+)
+from monai.transforms import Transform, MapTransform
+import numpy as np
 
 class transforms_base:
     def __init__(self, keys, nb_class=5):
@@ -25,6 +35,31 @@ class transforms_base:
                                      )
                     ])
 
+        
+        
+class transforms_mednist:
+    def __init__(self, keys=("input", "label"), nb_class=6):
+        self.keys = keys
+
+        self.train = Compose(
+            [
+                LoadImaged(keys=self.keys[0], image_only=True),
+                EnsureChannelFirstd(keys=self.keys[0]),
+                ScaleIntensityd(keys=self.keys[0]),
+                ToTensord(keys=self.keys),
+                AsDiscreted(keys=self.keys[1], to_onehot=nb_class),
+            ]
+        )
+
+        self.infer = Compose(
+            [
+                LoadImaged(keys=self.keys[0], image_only=True),
+                EnsureChannelFirstd(keys=self.keys[0]),
+                ScaleIntensityd(keys=self.keys[0]),
+                ToTensord(keys=[self.keys[0]]),
+            ]
+        )
+        
 class remove_depth:
     def __init__(self, keys, nb_class=5):
 
@@ -55,5 +90,6 @@ class remove_depth:
 available_transforms = {
     'BraTS_transform': transforms_base,
     'DecathlonT1_transform': transforms_base,
+    'MedNIST_transform': transforms_mednist, 
     'remove_depth': remove_depth 
 }

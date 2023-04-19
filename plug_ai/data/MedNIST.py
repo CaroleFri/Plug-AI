@@ -1,18 +1,24 @@
 import os
 from monai.apps.datasets import MedNISTDataset
 from monai.apps.utils import download_and_extract
+from monai.transforms import Compose
+from .data_aug import available_transforms
+from monai.data import Dataset
+
+import torch
 
 class MedNIST:
     url = "https://github.com/Project-MONAI/MONAI-extra-test-data/releases/download/0.8.1/MedNIST.tar.gz" 
     md5 = "0bc7306e7427e00ad1c5526a6677552d"
         
-    def __init__(self, dataset_dir, download_dataset=False, limit_sample=None, transformation=None, mode="Training", progress = True):
+    def __init__(self, dataset_dir, download_dataset=False, limit_sample=None, transformation=None, mode="TRAINING",nb_class=6, progress = True):
         self.dataset_dir = dataset_dir
-        self.download = download
+        self.download = download_dataset
         self.limit_sample = limit_sample
         self.transformation = transformation
         self.mode = mode
-        
+        self.nb_class = nb_class
+
         if download_dataset:
             self.download(root_dir = os.path.dirname(self.dataset_dir))
         
@@ -36,55 +42,56 @@ class MedNIST:
         # Remove archive after
         
 
+    def get_datalist(self,dataset_dir):        
+        class_names = sorted(x for x in os.listdir(dataset_dir) if os.path.isdir(os.path.join(dataset_dir, x)))
+        num_class = len(class_names)
 
-    def get_datalist(self,dataset_dir):
         datalist = []
-        with open(os.path.join(dataset_dir, "train.txt"), "r") as f:
-            lines = f.readlines()
-            for line in lines:
-                file_dic = {}
-                files = line.split()
-                for i, file in enumerate(files[:-1]):
-                    file_dic[f"channel_{i}"] = os.path.join(dataset_dir, file)
 
-                file_dic["label"] = os.path.join(dataset_dir, files[-1])
-                datalist.append(file_dic)
+        for i, class_name in enumerate(class_names):
+            class_dir = os.path.join(dataset_dir, class_name)
+            for image_file in os.listdir(class_dir):
+                file_dict = {
+                    "input": os.path.join(class_dir, image_file),
+                    "label": i
+                }
+                datalist.append(file_dict)
 
         print("got datalist, extract: \n", datalist[0])
+        
         return datalist
 
 
-    def get_dataset(self, dataset_dir, limit_sample=None, transformation = "Default", mode="Training"):#, transforma = transforms_BraTS()
+
+    def get_dataset(self, dataset_dir, limit_sample=None, transformation = "Default", mode="Training"):#, transforma = transforms_BraTS()        
         print("loading dataset...")
         datalist = self.get_datalist(dataset_dir)
-        # Modified transformation so that the loader just takes the keys. Up to the file generator to be format things correctly, not the transform. Best case, we sould not even have that fix below and just have a different "dataset_dir" for inference with no labels in it
-        if mode in ["Training","Evaluation"]:
+        
+        
+        if mode in ["TRAINING","EVALUATION"]:
             keys = list(datalist[0].keys())
         else:
             keys = list(datalist[0].keys())[:-1]
         print("keys:", keys)
         
         if limit_sample: 
-            datalist = datalist[:limit_sample]
-        
+            image_files_list = image_files_list[:limit_sample]
+            image_class = image_class[:limit_sample]
+            
         if isinstance(transformation, Compose):
             transform = transformation
         elif transformation in available_transforms:
-            # Must correct .train/.infer to make it generic to any transformation/args, or accept not full compatibility between dataset/transform
-            # I believe transform should be compatible if a pattern is respected, here keys could be well-defined...
-            if mode in ["Training","Evaluation"]:
-                transform = available_transforms[transformation](keys).train
+            if mode in ["TRAINING","EVALUATION"]:
+                transform = available_transforms[transformation](keys, nb_class=self.nb_class).train
             else:
-                transform = available_transforms[transformation](keys).infer
+                transform = available_transforms[transformation](keys, nb_class=self.nb_class).infer
         else:
             transform = None
-
                 
                 
         dataset = Dataset( # A more optimized dataset can be used
             data=datalist,
             transform=transform
         )
-        
         return dataset
     

@@ -8,7 +8,7 @@ class BraTS:
     # Idea : add a createParser that manager retrieve to complete his own parser
     #def createParser(cls):
     
-    def __init__(self, dataset_dir, download_dataset=False, transformation=None, mode="TRAINING", nb_class=5):
+    def __init__(self, dataset_dir, download_dataset=False, transformation=None, mode="TRAINING", nb_class=6):
         self.dataset_dir = dataset_dir
         self.download_dataset = download_dataset
         self.transformation = transformation
@@ -33,12 +33,6 @@ class BraTS:
         self.kwargs["dataset"] = self.check_dataset(**self.kwargs)
         self.preprocess = self.check_preprocess(self.kwargs["preprocess"], self.kwargs)
     
-    def get_signature():
-        #WIP
-        self.nbr_classes = 0
-        self.nbr_features = 0
-        self.complexity = 0
-
     def get_datalist(self,dataset_dir):
         datalist = []
         with open(os.path.join(dataset_dir, "train.txt"), "r") as f:
