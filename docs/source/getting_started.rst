@@ -1,3 +1,6 @@
+Getting Started
+===============
+
 In order to use Plug-AI after you installed it, you should simply call:
 
 .. code-block:: bash
