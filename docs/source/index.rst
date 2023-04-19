@@ -15,7 +15,6 @@
    
    installation
    getting_started   
-   tutorial
    feature_catalogue
    api_reference
    contribution
