@@ -10,7 +10,13 @@ Plug-AI can be used as an application with the following parameters by calling:
 
    python -m plug_ai --kwargs 
 
-Below are the arguments for plug_ai
+Below are the arguments for plug_ai retrieved using:
+
+.. code-block:: console
+
+   $ python -m plug_ai -h
+   
+
 
 .. literalinclude:: plug_ai_help.txt
    :language: console
