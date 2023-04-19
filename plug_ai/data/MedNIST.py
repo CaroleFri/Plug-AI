@@ -27,7 +27,7 @@ class MedNIST:
     
     def download(self, root_dir, progress):
         compressed_file_name = "MedNIST.tar.gz"
-        tarfile_name = root_dir / compressed_file_name
+        tarfile_name = os.path.join(root_dir, compressed_file_name)        
         
         download_and_extract(
             url=self.url,
