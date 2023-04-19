@@ -1,39 +1,62 @@
 ##################################################################################################
 ######################################## Data arguments : ########################################
 ##################################################################################################
-dataset: nnU-Net
+dataset: MedNIST
 dataset_kwargs:
-    nnunet_dataset_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_kg/nnUNet_raw_data_base"
-    task_id: 4
-    raw_dataset_type: "MSD"
-    raw_dataset_dir: "/gpfswork/rech/ibu/commun/datasets/MSD/Task04_Hippocampus"
-    download_raw_dataset: False
-    nbr_thread: 4
-    progress: True
+    dataset_dir: MedNIST # Absolute path to the dataset root dir
+    download_dataset: false
+    transformation: MedNIST_transform
+preprocess: null
+preprocess_kwargs:
+train_ratio: 1
+val_ratio: 0.2
+limit_sample: 20
+batch_size: 2
+shuffle: true
+drop_last: true
 
 ##################################################################################################
 ####################################### Model arguments : ########################################
 ##################################################################################################
-model: nnU-Net     #model_type MODEL_TYPE
-model_kwargs:     #model_args MODEL_ARGS
-
+model: DenseNet
+model_kwargs:
+    spatial_dims: 2
+    in_channels: 1
+    out_channels: 6
+    img_size: 64
 ##################################################################################################
 ##################################### Execution arguments : ######################################
 ##################################################################################################
-nb_epoch: 1
-learning_rate: '5e-05' #lr, learning rate, either a value or a string in "list of strategies"
+nb_epoch: 2
 device: cuda
-random_seed: 2022  # None for real randomness, set an integer for reproductibility
+random_seed: 2022
 report_log: False
-loop: nnU-Net
+
+loop: Default
+optimizer: SGD
+optimizer_kwargs:
+    lr: 0.0001
+    momentum: 0.99
+    weight_decay: 3e-5
+    nesterov: True
 lr_scheduler: None
 lr_scheduler_kwargs:
+    step_size: 2
+    verbose: True
+
+criterion: DiceCELoss
+criterion_kwargs:
+    to_onehot_y: False
+    softmax: True
+
+metric: None
+metric_kwargs:
 
 ##################################################################################################
 ####################################### Global arguments : #######################################
 ##################################################################################################
 config_file: null
 export_config: null
-mode: TRAINING # Choose between Training, Evaluation, Inference
-verbose: FULL #Full, Restricted, None
+mode: TRAINING
+verbose: FULL
 seed: null
