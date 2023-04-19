@@ -13,13 +13,13 @@ class MedNIST:
         
     def __init__(self, dataset_dir, download_dataset=False, limit_sample=None, transformation=None, mode="TRAINING",nb_class=6, progress = True):
         self.dataset_dir = dataset_dir
-        self.download = download_dataset
+        self.download_dataset = download_dataset
         self.limit_sample = limit_sample
         self.transformation = transformation
         self.mode = mode
         self.nb_class = nb_class
 
-        if download_dataset:
+        if self.download_dataset:
             self.download(root_dir = os.path.dirname(self.dataset_dir))
         
 
