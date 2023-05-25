@@ -39,11 +39,13 @@ Usage on Jean-zay cluster
 The module containing plug_ai is in progress.
 
 For now you can use Jean-Zay by first loading the following module:
+
 .. code-block:: bash
 
-    module load pytorch-gpu/py/1.10.1
+    module load pytorch-gpu/py/1.11.0
 
 Then you can the installation with:
+
 .. code-block:: bash
 
     pip install --user --no-cache-dir git+https://github.com/CaroleFri/Plug-AI
