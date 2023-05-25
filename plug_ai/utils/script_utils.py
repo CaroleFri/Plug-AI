@@ -212,7 +212,7 @@ def arg2lr_scheduler(input):
     if isinstance(input, Callable):
         lr_scheduler = input
     elif input is None:
-        lr_scheduler = None #supported_lr_scheduler["Default"] 
+        lr_scheduler = supported_lr_scheduler[None] #supported_lr_scheduler["Default"] 
     elif isinstance(input, str):        
         if input == "Default":
             lr_scheduler = supported_lr_scheduler["Default"]
@@ -272,7 +272,14 @@ def arg2preprocess(input):
             raise ValueError('Expected a preprocessing callable (dev only) or a valid preprocessing option or None.')
     return preprocess
 
-
+def arg2limit_sample(input):
+    if input is None:
+        limit_sample = None
+    elif isinstance(input, int):
+        limit_sample = input
+    else:
+        raise ValueError('Expected limit_sample to be an int or None')
+    return limit_sample
 
 def download_file_from_google_drive(id, destination):
     URL = "https://docs.google.com/uc?export=download"

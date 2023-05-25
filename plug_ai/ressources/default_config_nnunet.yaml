@@ -54,23 +54,18 @@ report_log: False
 # You can choose between "Default", or a criterion in the list of valid optimizers.
 # Complete optimizer_kwargs according to the args needed for the optimizer you selected
 # "Default" option do not make use of any kwargs
-loop: Default
+loop: nnU-Net
 loop_kwargs :
+    nnunet_dataset_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_kg/nnUNet_raw_data_base"
+    nnunet_preprocessed_rootdir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_kg/nnUNet_preprocessed"
+    nnunet_experiment_dir: "/gpfswork/rech/ibu/commun/nnUNet_experiment_kg/nnUNet_preprocessed"
+    network: "2d"
+    network_trainer: "nnUNetTrainerV2"
+    task: 4
+    fold: "all"
 
-optimizer: AdamW
-optimizer_kwargs:
-    lr: 1e-4
-    weight_decay: 1e-5
-    
-lr_scheduler: null
+lr_scheduler: None
 lr_scheduler_kwargs:
-
-criterion: DiceCELoss
-criterion_kwargs:
-    sigmoid: True
-
-metric: null
-metric_kwargs:
 #validation_only: 
 #continue_training:
 #plans_identifier:
@@ -102,7 +97,9 @@ export_config: null
 mode: TRAINING # Choose between Training, Evaluation, Inference
 verbose: FULL #Full, Restricted, None
 seed: null
-export_dir: null
+
+#Global arguments:
+#config_file:
 #config_file: ./config_Brats.yaml
 ##################################################################################################
 ######################################## Extra arguments : #######################################

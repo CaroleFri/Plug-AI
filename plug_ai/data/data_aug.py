@@ -8,8 +8,67 @@ from monai.transforms import (
     ScaleIntensityd,
     ToTensord,
 )
+
 from monai.transforms import Transform, MapTransform
-import numpy as np
+from monai import transforms
+
+
+from monai.transforms import(
+    Compose,
+    LoadImaged,
+    EnsureTyped,
+    ConvertToMultiChannelBasedOnBratsClassesd,
+    CropForegroundd,
+    RandSpatialCropd,
+    RandFlipd,
+    NormalizeIntensityd,
+    RandScaleIntensityd,
+    RandShiftIntensityd,
+    Orientationd,
+    Spacingd
+)
+
+
+
+class transforms_Brats:
+    def __init__(self, keys):
+        roi = (224, 224, 224)
+        self.train = Compose([
+            LoadImaged(keys=['channel_0', 'channel_1', 'channel_2', 'channel_3', 'label']),
+            EnsureChannelFirstd(keys = ['channel_0', 'channel_1', 'channel_2', 'channel_3']),
+            ConcatItemsd(keys=['channel_0', 'channel_1', 'channel_2', 'channel_3'], name="input", dim=0),
+            EnsureTyped(keys=["input", "label"]),
+            ConvertToMultiChannelBasedOnBratsClassesd(keys="label"),
+            Orientationd(keys=["input", "label"], axcodes="RAS"),
+            Spacingd(
+                keys=["input", "label"],
+                pixdim=(1.0, 1.0, 1.0),
+                mode=("bilinear", "nearest"),
+            ),
+            RandSpatialCropd(keys=["input", "label"], roi_size=[224, 224, 144], random_size=False),            
+            RandFlipd(keys=["input", "label"], prob=0.5, spatial_axis=0),
+            RandFlipd(keys=["input", "label"], prob=0.5, spatial_axis=1),
+            RandFlipd(keys=["input", "label"], prob=0.5, spatial_axis=2),
+            NormalizeIntensityd(keys="input", nonzero=True, channel_wise=True),
+            RandScaleIntensityd(keys="input", factors=0.1, prob=1.0),
+            RandShiftIntensityd(keys="input", offsets=0.1, prob=1.0),
+        ])
+
+        self.infer = Compose([
+            LoadImaged(keys=['channel_0', 'channel_1', 'channel_2', 'channel_3']),
+            EnsureChannelFirstd(keys=['channel_0', 'channel_1', 'channel_2', 'channel_3']),
+            ConcatItemsd(keys=['channel_0', 'channel_1', 'channel_2', 'channel_3'], name="input", dim=0),
+            EnsureTyped(keys=["input"]),
+            Orientationd(keys=["input"], axcodes="RAS"),
+            Spacingd(
+                keys=["input"],
+                pixdim=(1.0, 1.0, 1.0),
+                mode=("bilinear"),
+            ),            
+            NormalizeIntensityd(keys="input", nonzero=True, channel_wise=True),
+        ])
+
+
 
 class transforms_base:
     def __init__(self, keys, nb_class=5):
@@ -86,9 +145,10 @@ class remove_depth:
                         SqueezeDimd(keys=['input'], dim=-1)
                     ])
 
+
         
 available_transforms = {
-    'BraTS_transform': transforms_base,
+    'BraTS_transform': transforms_Brats,
     'DecathlonT1_transform': transforms_base,
     'MedNIST_transform': transforms_mednist, 
     'remove_depth': remove_depth 

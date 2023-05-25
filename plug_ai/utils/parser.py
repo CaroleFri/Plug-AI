@@ -98,13 +98,13 @@ def check_parse_config(config = {}, source="CLI"):
                    "batch_size" : int,
                    "train_ratio" : float, # WIP to clean, passage une seul liste
                    "val_ratio" : float, #Will need checkers for ratios
-                   "limit_sample" : int,
+                   "limit_sample" : arg2limit_sample,
                    "shuffle" : arg2bool,
                    "drop_last" : arg2bool,
                    
                    "model" : str,
                    "model_name" : str,
-                   "checkpoints_path" : str,
+                   "model_weights_path" : arg2path,
                    "model_kwargs" : arg2dict,
                    "use_signature" : arg2bool,
                    "res_out" : arg2bool,
@@ -130,7 +130,8 @@ def check_parse_config(config = {}, source="CLI"):
                    "export_config" : arg2path,
                    "mode" : arg2mode,
                    "seed" : arg2seed,
-                   "verbose" : arg2verbose}
+                   "verbose" : arg2verbose,
+                   "export_dir" : arg2path}
     
     for key in config.keys():
         if key in keys2parser.keys():

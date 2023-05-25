@@ -9,7 +9,7 @@ def main(kwargs):
     Placeholder
     '''
     
-    print("Plug-AI running with config:")
+    print("Plug-AI given kwargs:")
     [print('\t', key,':',value) for key, value in kwargs.items()]
     
     start = datetime.now()
@@ -27,7 +27,8 @@ def main(kwargs):
                                                       shuffle = kwargs["shuffle"],
                                                       drop_last = kwargs["drop_last"],
                                                       seed = kwargs["seed"], # doit permettre de fixer toutes les seed:  WIP A généraliser
-                                                      verbose = kwargs["verbose"])
+                                                      verbose = kwargs["verbose"],
+                                                      export_dir = kwargs["export_dir"])
     
     
     # Model_manager contains the model and model related parameters
@@ -35,10 +36,13 @@ def main(kwargs):
                                                   model = kwargs["model"],
                                                   device=kwargs["device"],
                                                   model_kwargs = kwargs["model_kwargs"],
+                                                  model_weights_path = kwargs["model_weights_path"],
                                                   mode = kwargs["mode"],
-                                                  verbose = kwargs["verbose"])
+                                                  verbose = kwargs["verbose"],
+                                                  export_dir = kwargs["export_dir"])
 
-
+                                                  
+                                                  
     # Execution_manager runs a training/evaluation/inference process. 
     execution_manager = plug_ai.managers.ExecutionManager(dataset_manager = dataset_manager, 
                                                           model_manager = model_manager,
@@ -57,7 +61,9 @@ def main(kwargs):
                                                           optimizer_kwargs = kwargs["optimizer_kwargs"],
                                                           lr_scheduler = kwargs["lr_scheduler"],
                                                           lr_scheduler_kwargs = kwargs["lr_scheduler_kwargs"],
-                                                          verbose = kwargs["verbose"])
+                                                          verbose = kwargs["verbose"],
+                                                          export_dir = kwargs["export_dir"])
+
     
     print(">>> Complete execution in: " + str(datetime.now() - start))    
     

@@ -1,5 +1,6 @@
 import os
 import argparse
+import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
@@ -47,6 +48,8 @@ class DatasetManager:
         # Generic arguments
         class_args.add_argument("--seed", type=int, help="An int to fix every plug_ai dataset random aspects.")
         class_args.add_argument("--verbose", type=arg2verbose, help="The level of verbose wanted. None, 'RESTRICTED' or 'FULL'")
+        class_args.add_argument("--export_dir", type=arg2path, help="None or Path. If Path, models, checkpoints, predictions for inference will be saved in that directory")
+
         return parser
 
   
@@ -63,7 +66,8 @@ class DatasetManager:
                  shuffle = True,
                  drop_last = True,
                  seed = 0,
-                 verbose = "Full", 
+                 verbose = "Full",
+                 export_dir = None,
                  ):
         """
         Args
@@ -79,6 +83,7 @@ class DatasetManager:
                  drop_last: Boolean that indicates if the last batch of an epoch should be left unused when incomplete.
                  seed: An int to fix every plug_ai dataset random aspects.
                  verbose: The level of verbose wanted. None, "Minimal" or "Full"
+                 export_dir: None or Path. If Path, models, checkpoints, predictions for inference will be saved in that directory
         """
         self.dataset = dataset
         self.dataset_kwargs = dataset_kwargs #dataset_kwargs = dict(self.dataset_kwargs)
@@ -94,6 +99,7 @@ class DatasetManager:
         self.drop_last = drop_last
         self.seed = seed
         self.verbose = verbose
+        self.export_dir = export_dir
         
         # Inside Manager check and parse of arguments reusing the same parser
         # We can remove completely the parsing and only do the check in the config generation
@@ -103,7 +109,8 @@ class DatasetManager:
         print_verbose(verbose_decorator_0.format(" Dataset initialization ... "), 
                       print_lvl = "RESTRICTED", 
                       verbose_lvl = self.verbose)
-        print_verbose("Running with interpreted config:\n\t", self.__dict__, 
+        
+        print_verbose("Running with interpreted config:\n", '\n'.join(f'\t{k}: {v}' for k, v in self.__dict__.items()), 
                       print_lvl = "FULL", 
                       verbose_lvl = self.verbose)
 
@@ -117,8 +124,15 @@ class DatasetManager:
                           verbose_lvl = self.verbose)
             preprocessing_output = self.run_preprocessing()
         
+        
+        # Add Necessary Execution kwargs to the dataset_kwargs
+        self.dataset_kwargs["mode"] = self.mode
+        # Retrieve dataset
         plug_ai_dataset = self.get_dataset_class()
         print(self.dataset)
+        
+        print(type(plug_ai_dataset.dataset))
+        
         if self.dataset != "nnU-Net":
             print("Loaded the dataset")
             self.dataset = plug_ai_dataset.dataset 
@@ -134,7 +148,7 @@ class DatasetManager:
                           verbose_lvl = self.verbose)
 
 
-            if self.mode == "TRAINING" or self.mode == "INFERENCE" :
+            if self.mode == "TRAINING" or self.mode == "EVALUATION" :
                 # HOW TO MANAGE TRAIN VAL TEST SPLIT? Split dataset before? Do it in modes? 
                 # First split : Dataset => Train+VAL | TEST I
                 # Second split : Train+Val => Train | Val
@@ -252,9 +266,11 @@ class ModelManager:
                                 callable that instantiate a Pytorch/Monai model''')
         #class_args.add_argument("--checkpoints_path", type=str, help = "a path to checkpoints for the model")
         class_args.add_argument("--model_kwargs", type=list, help = "Every arguments which should be passed to the model callable")
+        class_args.add_argument("--model_weights_path", type=str, help = "Path to trained model weights")
         class_args.add_argument("--mode", type=str, help = "A mode between Training, Evaluation and Inference ")
         #class_args.add_argument("--use_signature", type=arg2bool, help = '''A boolean that should indicate if to use or not the signature of the dataset for adaptation''')        
         class_args.add_argument("--verbose", type=str, help = "The level of verbose wanted. None, 'Minimal' or 'Full'")
+        class_args.add_argument("--export_dir", type=arg2path, help="None or Path. If Path, models, checkpoints, predictions for inference will be saved in that directory")
         return parser
     
     def __init__(self, 
@@ -262,8 +278,10 @@ class ModelManager:
                  model,
                  device,
                  model_kwargs = {},
+                 model_weights_path = None,
                  mode = "Training",
                  verbose = "FULL",
+                 export_dir = None,
                  ):
         #use_signature = False,
         #res_out = False,        
@@ -276,14 +294,18 @@ class ModelManager:
                  model_kwargs: Every arguments which should be passed to the model callable
                  mode: A mode between Training, Evaluation and Inference 
                  verbose: The level of verbose wanted. None, "Minimal" or "Full"
+                 export_dir: None or Path. If Path, models, checkpoints, predictions for inference will be saved in that directory
+                 
         """
 
         #self.plug_dataset
         self.model = model
         self.model_kwargs = model_kwargs
+        self.model_weights_path = model_weights_path
         self.device = device
         self.mode = mode
         self.verbose = verbose
+        self.export_dir = export_dir
 
         if isinstance(model, str): self.model_name = model
         # Inside Manager check and parse of arguments reusing the same parser
@@ -294,16 +316,17 @@ class ModelManager:
         print_verbose(verbose_decorator_0.format(" Model initialization ... "), 
                       print_lvl = "RESTRICTED", 
                       verbose_lvl = self.verbose)
-        print_verbose("Running with interpreted config:\n\t", self.__dict__, 
+        print_verbose("Running with interpreted config:\n", '\n'.join(f'\t{k}: {v}' for k, v in self.__dict__.items()), 
                       print_lvl = "FULL", 
                       verbose_lvl = self.verbose)
-        
         
         if self.model == "nnU-Net":
             self.model = self.get_model()
         else:
             self.model = self.get_model().to(self.device)
-            
+            #model_weights_path = "/gpfsdswork/projects/rech/ibu/ssos023/Plug-AI/examples/Training_Inference_demo/model_last.pt"
+            if self.model_weights_path is not None:
+                self.model.load_state_dict(torch.load(self.model_weights_path))
         print("Model preparation done!")
 
             
@@ -357,6 +380,7 @@ class ExecutionManager:
         class_args.add_argument("--lr_scheduler", type=str)
         class_args.add_argument("--lr_scheduler_kwargs", type=dict)
         class_args.add_argument("--verbose", type=str)
+        class_args.add_argument("--export_dir", type=arg2path, help="None or Path. If Path, models, checkpoints, predictions for inference will be saved in that directory")
         #class_args.add_argument("--batch_size", type=int) #DatasetManager Parameter
         return parser
     
@@ -379,7 +403,8 @@ class ExecutionManager:
                  optimizer_kwargs = {},
                  lr_scheduler = None,
                  lr_scheduler_kwargs = {},
-                 verbose = "FULL"
+                 verbose = "FULL",                 
+                 export_dir = None
                 ):
         #learning_rate = 5e-05,
 
@@ -400,20 +425,22 @@ class ExecutionManager:
         self.lr_scheduler = lr_scheduler
         self.lr_scheduler_kwargs = lr_scheduler_kwargs
         self.verbose = verbose
+        self.export_dir = export_dir
         
         # Inside Manager check and parse of arguments reusing the same parser
         # We can remove completely the parsing and only do the check in the config generation
         self.__dict__  = check_parse_config(self.__dict__, source="Execution_Manager")
         #HOTFIX, dataset_manager and model_manager aren't in check_parse_config so they are filtered, thus the definition below
+        
         self.dataset_manager = dataset_manager
         self.model_manager = model_manager
         
         print_verbose(verbose_decorator_0.format(" Execution initialization ... "), 
                       print_lvl = "RESTRICTED", 
                       verbose_lvl = self.verbose)
-        print_verbose("Running with interpreted config:\n\t", self.__dict__, 
-              print_lvl = "FULL", 
-              verbose_lvl = self.verbose)
+        print_verbose("Running with interpreted config:\n", '\n'.join(f'\t{k}: {v}' for k, v in self.__dict__.items()), 
+                      print_lvl = "FULL", 
+                      verbose_lvl = self.verbose)
 
         
         
@@ -446,6 +473,7 @@ class ExecutionManager:
                 self.loop_kwargs["nb_epoch"] = self.nb_epoch
                 self.loop_kwargs["device"] = self.device
                 self.loop_kwargs["verbose"] = self.verbose
+                self.loop_kwargs["export_dir"] = self.export_dir
                 #self.loop_kwargs["train_step"] = self.train_step
                 # train_step selector not here yet
 
@@ -453,17 +481,33 @@ class ExecutionManager:
                 loop_kwargs_filtered = filter_dict(self.loop, self.loop_kwargs)
                 print(loop_kwargs_filtered.keys())
                 self.model = self.loop(**loop_kwargs_filtered).model
-            
-            #torch.save(self.model.state_dict(), os.path.join(config['checkpoints_path'], f'{config["model_name"]}.pt'))
-            
-            
+                
+                if self.export_dir is not None:
+                    # Create directory if it does not already exist
+                    os.makedirs(os.path.join(self.export_dir, "models"), exist_ok=True)
+                    # Save the model returned by the training
+                    torch.save(self.model.state_dict(), os.path.join(self.export_dir, "models", "model_last.pt"))
+        
         elif self.mode == "EVALUATION":
             #things to do around the eval loop
             print("EVAL LOOP")
         
         elif self.mode == "INFERENCE":
             #things to do around the infer loop
-            print("INFER LOOP")
-        
-
+            print("INFERENCE MODE:")
+            if self.model_manager.model_name == "nnU-Net":
+                print("Nothing done, developpement in progress")
+            else:
+                self.loop_kwargs["infer_loader"] = self.dataset_manager.infer_loader
+                self.loop_kwargs["model"] = self.model_manager.model
+                self.loop_kwargs["metric"] = self.metric
+                self.loop_kwargs["metric_kwargs"] = self.metric_kwargs
+                self.loop_kwargs["device"] = self.device
+                self.loop_kwargs["verbose"] = self.verbose
+                self.loop_kwargs["export_dir"] = self.export_dir
+                
+                loop_kwargs_filtered = filter_dict(self.loop, self.loop_kwargs)
+                print(loop_kwargs_filtered.keys())
+                self.loop(**loop_kwargs_filtered)
+                                
         print("Execution over")

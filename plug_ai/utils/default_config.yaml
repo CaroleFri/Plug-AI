@@ -36,6 +36,7 @@ model_kwargs:     #model_args MODEL_ARGS
     overwrite_plans: null
     overwrite_plans_identifier: null
     progress: True
+model_weights_path: null
 
 ##################################################################################################
 ##################################### Execution arguments : ######################################
